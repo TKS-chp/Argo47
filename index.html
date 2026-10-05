@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TKS | Web Design & Development</title>
+  <style>
+    /* 
+      1. テーマ変数（ライトモードとダークモードの色彩設計）
+      完全に白黒ではなく、上質なオフホワイトと深い漆黒を使用
+    */
+    :root {
+      --bg-color: #fbfbfb;
+      --text-main: #111317;
+      --text-sub: #666666;
+      --border-color: #e5e5e5;
+      --btn-bg: #111317;
+      --btn-text: #ffffff;
+      --card-bg: #ffffff;
+      --hover-bg: #f5f5f5;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #0a0a0c;
+      --text-main: #f5f5f7;
+      --text-sub: #86868b;
+      --border-color: #262629;
+      --btn-bg: #f5f5f7;
+      --btn-text: #0a0a0c;
+      --card-bg: #111113;
+      --hover-bg: #1a1a1d;
+    }
+
+    /* 2. 基本リセットとフォント設定 */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
+      line-height: 1.6;
+      transition: background-color 0.4s ease, color 0.4s ease;
+      -webkit-font-smoothing: antialiased;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    /* 3. レイアウト構造 */
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 5%;
+    }
+
+    /* ヘッダー＆ダークモードスイッチ */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 30px 0;
+      border-bottom: 1px solid var(--border-color);
+      transition: border-color 0.4s ease;
+    }
+    .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .theme-switch {
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+    }
+    .theme-switch:hover {
+      background-color: var(--hover-bg);
+    }
+
+    /* メインビジュアル（圧倒的なジャンプ率） */
+    .hero {
+      padding: 120px 0 100px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 30px;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-sub);
+      max-width: 600px;
+      line-height: 1.8;
+    }
+
+    /* セクション共通 */
+    section {
+      padding: 100px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .section-header {
+      margin-bottom: 60px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--text-sub);
+      text-transform: uppercase;
+    }
+
+    /* 提供サービス（リストレイアウト） */
+    .service-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      border-top: 1px solid var(--border-color);
+    }
+    .service-item {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      padding: 30px 0;
+      border-bottom: 1px solid var(--border-color);
+      transition: background-color 0.3s ease;
+    }
+    .service-item:hover {
+      background-color: var(--hover-bg);
+    }
+    .service-name {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    .service-desc {
+      color: var(--text-sub);
+      font-size: 0.95rem;
+    }
+
+    /* 制作実績（グリッドレイアウト） */
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 40px;
+    }
+    .work-card {
+      display: flex;
+      flex-direction: column;
+      group: hover;
+    }
+    .work-image-box {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      transition: border-color 0.3s ease;
+    }
+    .work-card:hover .work-image-box {
+      border-color: var(--text-sub);
+    }
+    .work-tag {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+    .work-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .work-desc {
+      font-size: 0.9rem;
+      color: var(--text-sub);
+    }
+
+    /* コンタクト */
+    .contact-box {
+      text-align: center;
+      padding: 60px 0;
+    }
+    .contact-msg {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-bottom: 30px;
+    }
+    .contact-btn {
+      display: inline-block;
+      background-color: var(--btn-bg);
+      color: var(--btn-text);
+      padding: 16px 40px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      border-radius: 30px;
+      transition: opacity 0.3s ease;
+    }
+    .contact-btn:hover {
+      opacity: 0.8;
+    }
+
+    /* フッター */
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-sub);
+    }
+
+    /* レスポンシブ */
+    @media (max-width: 768px) {
+      .service-item {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo">TKS.</div>
+      <!-- ダークモード切り替えスイッチ -->
+      <button class="theme-switch" id="theme-toggle" aria-label="テーマ切り替え">
+        <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- 初期状態は月（ダークモードへの誘い） -->
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+        <span id="theme-text">Dark Mode</span>
+      </button>
+    </header>
+
+    <!-- ファーストビュー -->
+    <section class="hero">
+      <h1>機能する美しさを、<br>コードで紡ぐ。</h1>
+      <p>デザインの透明性と、プログラムによる堅牢な動作を両立。Webサイト制作から、ブラウザで動く独自のWebアプリ、自動化スクリプトの開発まで、本質的な課題解決をワンストップで提供します。</p>
+    </section>
+
+    <!-- 提供サービス -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title">01 / Services</h2>
+      </div>
+      <div class="service-list">
+        <div class="service-item">
+          <div class="service-name">Webサイト制作</div>
+          <div class="service-desc">コーポレートサイトからLPまで、ピクセルパーフェクトな実装と滑らかなアニメーションを備えた、ブランド価値を高めるサイトを構築します。</div>
+        </div>
+        <div class="service-item">
+          <div class="service-name">Webアプリ・UI開発</div>
+          <div class="service-desc">JavaScriptを活用したブラウザゲームや、診断ツール、シミュレーション機能など、ユーザーの滞在時間を最大化するインタラクティブな体験を実装します。</div>
+        </div>
+        <div class="service-item">
+          <div class="service-name">業務自動化ツール</div>
+          <div class="service-desc">Pythonを用いたデータ収集（スクレイピング）や、定型作業の自動化スクリプトを開発。人間が本来やるべきクリエイティブな時間を創出します。</div>
+        </div>
+        <div class="service-item">
+          <div class="service-name">映像・動画編集</div>
+          <div class="service-desc">縦型ショート動画からサービス解説動画まで。視線を誘導するテロップとテンポの良いカット割りで、離脱されない映像を制作します。</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 制作実績 -->
+    <section>
+      <div class="section-header">
+        <h2 class="section-title">02 / Selected Works</h2>
+      </div>
+      <div class="works-grid">
+        <!-- 実績1 -->
+        <a href="mygame.html" class="work-card">
+          <div class="work-image-box">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect>
+              <circle cx="17" cy="12" r="1"></circle>
+              <circle cx="14" cy="12" r="1"></circle>
+              <path d="M6 12h4"></path>
+              <path d="M8 10v4"></path>
+            </svg>
+          </div>
+          <div class="work-tag">WEB APPLICATION</div>
+          <div class="work-title">サイバータンクアリーナ</div>
+          <div class="work-desc">全20ステージ、機体強化、レーザー武装を実装したブラウザ上で動作する2Dアクションゲーム。</div>
+        </a>
+
+        <!-- 実績2 -->
+        <a href="flash.html" class="work-card">
+          <div class="work-image-box">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <div class="work-tag">DIAGNOSTIC TOOL</div>
+          <div class="work-title">脳力覚醒フラッシュ暗算</div>
+          <div class="work-desc">全5段階の難易度で瞬間計算力と記憶力を測定し、推定脳年齢を即座に判定する体験型診断アプリ。</div>
+        </a>
+
+        <!-- 実績3 -->
+        <a href="reflex.html" class="work-card">
+          <div class="work-image-box">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          </div>
+          <div class="work-tag">SIMULATION</div>
+          <div class="work-title">超精密・反射神経測定</div>
+          <div class="work-desc">条件付き判断（Go/No-Go）を測定し、Canvasによる正規分布グラフで人類全体の中の位置を可視化。</div>
+        </a>
+      </div>
+    </section>
+
+    <!-- コンタクト -->
+    <section style="border-bottom: none;">
+      <div class="contact-box">
+        <div class="contact-msg">プロジェクトのご相談をお待ちしております。</div>
+        <a href="#" class="contact-btn">ご相談・お見積もり</a>
+      </div>
+    </section>
+
+    <footer>
+      <p>&copy; 2026 TKS. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- ダークモード切り替えのスクリプト -->
+  <script>
+    const toggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+    
+    // SVGアイコンのパスデータ
+    const moonPath = "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z";
+    const sunPath = "M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z";
+
+    // 以前の選択を記憶（ローカルストレージ）
+    const savedTheme = localStorage.getItem('tks-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateToggleUI(savedTheme);
+
+    toggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('tks-theme', newTheme);
+      updateToggleUI(newTheme);
+    });
+
+    function updateToggleUI(theme) {
+      if (theme === 'dark') {
+        themeIcon.innerHTML = `<path d="${sunPath}"></path>`;
+        themeText.textContent = 'Light Mode';
+      } else {
+        themeIcon.innerHTML = `<path d="${moonPath}"></path>`;
+        themeText.textContent = 'Dark Mode';
+      }
+    }
+  </script>
+</body>
+</html>
