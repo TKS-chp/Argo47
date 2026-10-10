@@ -91,3 +91,335 @@
     section { padding: 100px 0; border-bottom: 1px solid var(--border-color); scroll-margin-top: 50px; }
     .section-header { margin-bottom: 60px; }
     .section-title { font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; color: var(--text-sub); text-transform: uppercase; }
+
+    .service-list { display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--border-color); }
+    .service-item { display: grid; grid-template-columns: 1fr 2fr; padding: 30px 0; border-bottom: 1px solid var(--border-color); position: relative; overflow: hidden; }
+    .service-item::after { content: ''; position: absolute; left: 0; bottom: -1px; width: 0%; height: 2px; background-color: var(--text-main); transition: width 0.5s ease; }
+    .service-item:hover { background-color: var(--hover-bg); }
+    .service-item:hover::after { width: 100%; }
+    .service-name { font-size: 1.5rem; font-weight: 600; transition: transform 0.3s ease; }
+    .service-item:hover .service-name { transform: translateX(10px); }
+    .service-desc { color: var(--text-sub); font-size: 0.95rem; }
+    @media (max-width: 768px) { .service-item { grid-template-columns: 1fr; gap: 10px; } .service-item:hover .service-name { transform: none; } }
+
+    .works-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
+    .work-card { display: flex; flex-direction: column; cursor: pointer; }
+    .work-image-box { width: 100%; aspect-ratio: 16 / 9; background-color: var(--card-bg); border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: border-color 0.4s ease; }
+    .work-icon { transition: transform 0.6s ease, opacity 0.4s ease; }
+    .work-card:hover .work-image-box { border-color: var(--text-main); }
+    .work-card:hover .work-icon { transform: scale(1.15); opacity: 0.7; }
+    .work-tag { font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; }
+    .work-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; transition: color 0.3s; }
+    .work-card:hover .work-title { color: var(--text-sub); }
+    .work-desc { font-size: 0.9rem; color: var(--text-sub); }
+
+    /* ★ モーダル（詳細ポップアップ）のCSS */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px);
+      display: flex; justify-content: center; align-items: center;
+      opacity: 0; pointer-events: none; transition: opacity 0.4s ease; z-index: 1000;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+    .modal-content {
+      background-color: var(--bg-color); width: 90%; max-width: 600px;
+      padding: 40px; border-radius: 12px; border: 1px solid var(--border-color);
+      position: relative; transform: translateY(20px); transition: transform 0.4s ease;
+    }
+    .modal-overlay.active .modal-content { transform: translateY(0); }
+    .modal-close {
+      position: absolute; top: 20px; right: 20px; background: none; border: none;
+      font-size: 1.5rem; color: var(--text-sub); cursor: pointer; transition: color 0.2s;
+    }
+    .modal-close:hover { color: var(--text-main); }
+    .modal-tech {
+      background-color: var(--hover-bg); padding: 15px; border-radius: 8px;
+      margin: 20px 0; font-size: 0.85rem; color: var(--text-main); border: 1px solid var(--border-color);
+    }
+    .modal-btn {
+      display: inline-block; background-color: var(--btn-bg); color: var(--btn-text);
+      padding: 12px 30px; font-size: 0.9rem; font-weight: 700; border-radius: 30px;
+      text-align: center; transition: all 0.3s ease;
+    }
+    .modal-btn:hover { opacity: 0.8; transform: translateY(-2px); }
+
+    /* フォームUI */
+    .contact-wrapper { max-width: 600px; margin: 0 auto; }
+    .contact-msg { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; text-align: center; }
+    .contact-sub { font-size: 0.95rem; color: var(--text-sub); text-align: center; margin-bottom: 40px; }
+    .form-group { margin-bottom: 25px; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+    .form-input { width: 100%; padding: 15px; font-size: 1rem; font-family: inherit; background-color: var(--input-bg); color: var(--text-main); border: 1px solid var(--border-color); border-radius: 8px; transition: all 0.3s ease; outline: none; }
+    .form-input:focus { border-color: var(--text-main); box-shadow: 0 0 0 1px var(--text-main); }
+    textarea.form-input { resize: vertical; min-height: 120px; }
+    .submit-btn { width: 100%; background-color: var(--btn-bg); color: var(--btn-text); padding: 16px; font-size: 1rem; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; transition: all 0.3s ease; }
+    .submit-btn:hover { opacity: 0.8; transform: translateY(-2px); }
+    #thanks-message { display: none; text-align: center; padding: 40px; background-color: var(--hover-bg); border-radius: 8px; border: 1px solid var(--border-color); }
+    .thanks-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; }
+    .thanks-desc { color: var(--text-sub); font-size: 0.95rem; }
+    footer { padding: 40px 0; text-align: center; font-size: 0.8rem; color: var(--text-sub); }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="fade-in">
+      <div class="logo">TKS.</div>
+      <nav class="global-nav" id="global-nav">
+        <a href="#services">Services</a>
+        <a href="#works">Works</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="header-controls">
+        <button class="theme-switch" id="theme-toggle" aria-label="Toggle Theme">
+          <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span id="theme-text">Dark Mode</span>
+        </button>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </header>
+
+    <section class="hero fade-in">
+      <h1>機能する美しさを、<br>コードで紡ぐ。</h1>
+      <p>デザインの透明性と、プログラムによる堅牢な動作を両立。Webサイト制作から、ブラウザで動く独自のWebアプリ、自動化スクリプトの開発まで、本質的な課題解決をワンストップで提供します。</p>
+    </section>
+
+    <section id="services" class="fade-in">
+      <div class="section-header">
+        <h2 class="section-title">01 / Services</h2>
+      </div>
+      <div class="service-list">
+        <div class="service-item">
+          <div class="service-name">Webサイト制作</div>
+          <div class="service-desc">コーポレートサイトからLPまで、ピクセルパーフェクトな実装と滑らかなアニメーションを備えた、ブランド価値を高めるサイトを構築します。</div>
+        </div>
+        <div class="service-item">
+          <div class="service-name">Webアプリ・UI開発</div>
+          <div class="service-desc">JavaScriptを活用したブラウザゲームや、診断ツール、シミュレーション機能など、ユーザーの滞在時間を最大化するインタラクティブな体験を実装します。</div>
+        </div>
+        <div class="service-item">
+          <div class="service-name">業務自動化ツール</div>
+          <div class="service-desc">Pythonを用いたデータ収集（スクレイピング）や、定型作業の自動化スクリプトを開発。人間が本来やるべきクリエイティブな時間を創出します。</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="works" class="fade-in">
+      <div class="section-header">
+        <h2 class="section-title">02 / Selected Works</h2>
+      </div>
+      <div class="works-grid">
+        <!-- ★ 作品にモーダル用のデータ（data属性）を仕込みました -->
+        <div class="work-card open-modal-btn" data-title="サイバータンクアリーナ" data-tag="WEB APPLICATION" data-desc="全20ステージ、機体強化、レーザー武装を実装したブラウザ上で動作する2Dアクションゲーム。当たり判定から状態管理まで全てVanilla JSで実装。" data-tech="HTML, CSS, JavaScript (ES6+), Canvas API" data-link="mygame.html">
+          <div class="work-image-box">
+            <svg class="work-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect><circle cx="17" cy="12" r="1"></circle><circle cx="14" cy="12" r="1"></circle><path d="M6 12h4"></path><path d="M8 10v4"></path>
+            </svg>
+          </div>
+          <div class="work-tag">WEB APPLICATION</div>
+          <div class="work-title">サイバータンクアリーナ</div>
+          <div class="work-desc">全20ステージ、機体強化、レーザー武装を実装したブラウザ上で動作する2Dアクションゲーム。</div>
+        </div>
+
+        <div class="work-card open-modal-btn" data-title="体験型シミュレーションラボ" data-tag="DIAGNOSTIC TOOL" data-desc="瞬間計算力や条件付き反射速度を測定し、正規分布グラフで可視化する診断アプリケーション群。ユーザーの滞在時間を伸ばすインタラクティブなUIを追求。" data-tech="HTML, CSS, JavaScript, Web Audio API" data-link="lab.html">
+          <div class="work-image-box">
+            <svg class="work-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <div class="work-tag">DIAGNOSTIC TOOL</div>
+          <div class="work-title">体験型シミュレーションラボ</div>
+          <div class="work-desc">瞬間計算力や条件付き反射速度を測定し、正規分布グラフで可視化する診断アプリケーション群。</div>
+        </div>
+
+        <div class="work-card open-modal-btn" data-title="分析ダッシュボードUI" data-tag="DATA VISUALIZATION" data-desc="自動収集したデータをリアルタイムにグラフ化し、直感的な意思決定を支援する管理画面モックアップ。業務効率化ツールのフロントエンド実装例。" data-tech="HTML, CSS, JavaScript, Chart.js" data-link="dashboard.html">
+          <div class="work-image-box">
+            <svg class="work-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>
+            </svg>
+          </div>
+          <div class="work-tag">DATA VISUALIZATION</div>
+          <div class="work-title">分析ダッシュボードUI</div>
+          <div class="work-desc">自動収集したデータをリアルタイムにグラフ化し、直感的な意思決定を支援する管理画面モックアップ。</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="fade-in" style="border-bottom: none;">
+      <div class="contact-wrapper">
+        <div class="contact-msg">Let's work together.</div>
+        <div class="contact-sub">プロジェクトのご相談、お見積もりなどお気軽にご連絡ください。</div>
+        
+        <div id="thanks-message">
+          <div class="thanks-title">送信完了しました。</div>
+          <div class="thanks-desc">メッセージありがとうございます。確認次第、ご返信いたします。</div>
+        </div>
+
+        <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){ showThanks(); }"></iframe>
+
+        <!-- ★ こうすけ専用ID組み込み済み -->
+        <form id="contact-form" action="https://docs.google.com/forms/d/e/1FAIpQLSenahDrk-1CWj3n95CXkCLm3GiCbB0cS2tKJXtgyJ3TRGMcIQ/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+          <div class="form-group">
+            <label class="form-label">お名前 / 企業名</label>
+            <input type="text" name="entry.954022498" class="form-input" required placeholder="山田 太郎">
+          </div>
+          <div class="form-group">
+            <label class="form-label">メールアドレス</label>
+            <input type="email" name="entry.976307236" class="form-input" required placeholder="mail@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ご相談内容</label>
+            <textarea name="entry.1800310795" class="form-input" required placeholder="制作の要件やご予算感など、お決まりの範囲でご記入ください。"></textarea>
+          </div>
+          <button type="submit" class="submit-btn">メッセージを送信する</button>
+        </form>
+      </div>
+    </section>
+
+    <footer class="fade-in">
+      <p>&copy; 2026 TKS. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- ★ モーダル画面の枠組み（最初は非表示） -->
+  <div class="modal-overlay" id="project-modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">×</button>
+      <div class="work-tag" id="modal-tag">TAG</div>
+      <h3 class="modal-title" id="modal-title">Title</h3>
+      <p class="work-desc" id="modal-desc" style="margin-bottom: 10px;">Description</p>
+      <div class="modal-tech">
+        <strong>使用技術:</strong> <span id="modal-tech">Tech Stack</span>
+      </div>
+      <a href="#" class="modal-btn" id="modal-link">実際の制作物を見る</a>
+    </div>
+  </div>
+
+  <script>
+    /* --- モーダル制御（新規追加） --- */
+    const modalOverlay = document.getElementById('project-modal');
+    const modalCloseBtn = document.getElementById('modal-close');
+    const modalCards = document.querySelectorAll('.open-modal-btn');
+
+    // 作品カードをクリックしたらモーダルにデータを流し込んで開く
+    modalCards.forEach(card => {
+      card.addEventListener('click', () => {
+        document.getElementById('modal-title').textContent = card.getAttribute('data-title');
+        document.getElementById('modal-tag').textContent = card.getAttribute('data-tag');
+        document.getElementById('modal-desc').textContent = card.getAttribute('data-desc');
+        document.getElementById('modal-tech').textContent = card.getAttribute('data-tech');
+        document.getElementById('modal-link').href = card.getAttribute('data-link');
+        
+        modalOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // 裏のスクロールを止める
+      });
+    });
+
+    // 閉じる処理
+    const closeModal = () => {
+      modalOverlay.classList.remove('active');
+      document.body.style.overflow = 'auto'; // スクロール復活
+    };
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (e) => {
+      if (e.target === modalOverlay) closeModal(); // 黒い背景クリックでも閉じる
+    });
+
+    /* --- ハンバーガーメニュー制御 --- */
+    const hamburger = document.getElementById('hamburger');
+    const globalNav = document.getElementById('global-nav');
+    const navLinks = document.querySelectorAll('.global-nav a');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      globalNav.classList.toggle('open');
+    });
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        globalNav.classList.remove('open');
+      });
+    });
+
+    /* --- ダークモード・効果音制御 --- */
+    const toggleBtn = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeText = document.getElementById('theme-text');
+    const moonPath = "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z";
+    const sunPath = "M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z";
+    
+    const savedTheme = localStorage.getItem('tks-theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateToggleUI(savedTheme);
+
+    toggleBtn.addEventListener('click', () => {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('tks-theme', newTheme);
+      updateToggleUI(newTheme);
+    });
+
+    function updateToggleUI(theme) {
+      if (theme === 'dark') {
+        themeIcon.innerHTML = `<path d="${sunPath}"></path>`;
+        if(themeText) themeText.textContent = 'Light Mode';
+      } else {
+        themeIcon.innerHTML = `<path d="${moonPath}"></path>`;
+        if(themeText) themeText.textContent = 'Dark Mode';
+      }
+    }
+
+    let audioCtx = null;
+    const initAudio = () => { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); };
+    document.addEventListener('pointerdown', initAudio, { once: true });
+    document.addEventListener('pointermove', initAudio, { once: true });
+
+    function playSound(type) {
+      if (!audioCtx || audioCtx.state === 'suspended') return;
+      if (!window.matchMedia("(pointer: fine)").matches) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      const now = audioCtx.currentTime;
+      if (type === 'hover') {
+        osc.type = 'sine'; osc.frequency.setValueAtTime(1000, now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.03);
+        gain.gain.setValueAtTime(0.015, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+        osc.start(now); osc.stop(now + 0.03);
+      } else if (type === 'click') {
+        osc.type = 'triangle'; osc.frequency.setValueAtTime(500, now);
+        osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+        gain.gain.setValueAtTime(0.04, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
+        osc.start(now); osc.stop(now + 0.1);
+      }
+    }
+    document.querySelectorAll('a, button, .service-item, .work-card').forEach(el => {
+      el.addEventListener('mouseenter', () => playSound('hover'));
+      el.addEventListener('mousedown', () => playSound('click'));
+    });
+
+    /* --- スクロールアニメーション制御 --- */
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    /* --- フォーム送信制御 --- */
+    let submitted = false;
+    function showThanks() {
+      document.getElementById('contact-form').style.display = 'none';
+      document.getElementById('thanks-message').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
