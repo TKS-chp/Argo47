@@ -294,19 +294,20 @@
 
         <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){ showThanks(); }"></iframe>
 
-        <!-- フォームの裏側は自分のGoogleフォームのIDに直してね -->
-        <form id="contact-form" action="#" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
+    
+        <!-- ★ こうすけ専用：完全連携フォーム -->
+        <form id="contact-form" action="https://docs.google.com/forms/d/e/1FAIpQLSenahDrk-1CWj3n95CXkCLm3GiCbB0cS2tKJXtgyJ3TRGMcIQ/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
           <div class="form-group">
             <label class="form-label">お名前 / 企業名</label>
-            <input type="text" name="dummy_entry_name" class="form-input" required placeholder="山田 太郎">
+            <input type="text" name="entry.954022498" class="form-input" required placeholder="山田 太郎">
           </div>
           <div class="form-group">
             <label class="form-label">メールアドレス</label>
-            <input type="email" name="dummy_entry_email" class="form-input" required placeholder="mail@example.com">
+            <input type="email" name="entry.976307236" class="form-input" required placeholder="mail@example.com">
           </div>
           <div class="form-group">
             <label class="form-label">ご相談内容</label>
-            <textarea name="dummy_entry_message" class="form-input" required placeholder="制作の要件やご予算感など、お決まりの範囲でご記入ください。"></textarea>
+            <textarea name="entry.1800310795" class="form-input" required placeholder="制作の要件やご予算感など、お決まりの範囲でご記入ください。"></textarea>
           </div>
           <button type="submit" class="submit-btn">メッセージを送信する</button>
         </form>
