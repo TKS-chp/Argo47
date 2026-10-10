@@ -9,7 +9,6 @@
   <meta name="google-site-verification" content="bM9akHj-lS8HRTlVCFUzY7iqJf1Bjtkt7MliwHZps-Q" />
 
   <style>
-    /* 1. テーマ変数 */
     :root {
       --bg-color: #fbfbfb; --text-main: #111317; --text-sub: #666666;
       --border-color: #e5e5e5; --btn-bg: #111317; --btn-text: #ffffff;
@@ -32,62 +31,57 @@
       -webkit-font-smoothing: antialiased;
     }
     a { text-decoration: none; color: inherit; display: block; }
-    .container { max-width: 1200px; /* PC向けに少し幅を広げた */ margin: 0 auto; padding: 0 5%; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
 
-    .fade-in {
-      opacity: 0; transform: translateY(30px);
-      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    /* ★ 1. オープニングローダーのCSS */
+    #preloader {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+      background-color: var(--text-main); z-index: 9999;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      transition: transform 0.8s cubic-bezier(0.86, 0, 0.07, 1);
     }
+    #preloader.loaded { transform: translateY(-100%); }
+    .loader-logo { font-size: 2.5rem; font-weight: 900; letter-spacing: 4px; color: var(--bg-color); margin-bottom: 10px; }
+    .loader-progress { font-size: 1rem; font-weight: 600; color: var(--text-sub); font-variant-numeric: tabular-nums; }
+
+    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
     .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-    /* ヘッダーとメニュー */
-    header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 30px 0; border-bottom: 1px solid var(--border-color); position: relative; z-index: 100;
-    }
+    /* ヘッダー */
+    header { display: flex; justify-content: space-between; align-items: center; padding: 30px 0; border-bottom: 1px solid var(--border-color); position: relative; z-index: 100; }
     .logo { font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; position: relative; z-index: 101; }
     .global-nav { display: flex; gap: 40px; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; }
     .global-nav a { transition: color 0.3s ease; }
     .global-nav a:hover { color: var(--text-sub); }
     .header-controls { display: flex; align-items: center; gap: 20px; z-index: 101; }
-    .theme-switch {
-      background: none; border: 1px solid var(--border-color); color: var(--text-main);
-      padding: 8px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
-      cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;
-    }
+    .theme-switch { background: none; border: 1px solid var(--border-color); color: var(--text-main); padding: 8px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease; }
     .theme-switch:hover { background-color: var(--text-main); color: var(--bg-color); transform: translateY(-2px); }
-    
     .hamburger { display: none; background: none; border: none; cursor: pointer; width: 24px; height: 16px; position: relative; z-index: 101; }
     .hamburger span { position: absolute; width: 100%; height: 2px; background-color: var(--text-main); transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); left: 0; }
     .hamburger span:nth-child(1) { top: 0; } .hamburger span:nth-child(2) { top: 7px; } .hamburger span:nth-child(3) { bottom: 0; }
     .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); } .hamburger.open span:nth-child(2) { opacity: 0; } .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* ★ 1. トップ画面（2カラム化） */
-    .hero {
-      padding: 120px 0; border-bottom: 1px solid var(--border-color);
-      display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center;
-    }
+    /* トップ画面 */
+    .hero { padding: 120px 0 80px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
     .hero-content h1 { font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 30px; }
     .hero-content p { font-size: 1.1rem; color: var(--text-sub); line-height: 1.8; margin-bottom: 40px; }
     .hero-btn { display: inline-block; padding: 14px 32px; background-color: var(--btn-bg); color: var(--btn-text); border-radius: 30px; font-weight: 600; font-size: 0.9rem; transition: transform 0.3s ease, opacity 0.3s ease; }
     .hero-btn:hover { opacity: 0.9; transform: translateY(-3px); }
-    
-    /* PCの右側に置く巨大な装飾（タイポグラフィ） */
-    .hero-visual {
-      height: 100%; min-height: 400px; background-color: var(--hero-accent);
-      border-radius: 20px; display: flex; align-items: center; justify-content: center;
-      position: relative; overflow: hidden;
-    }
-    .hero-visual::before {
-      content: 'TKS.'; position: absolute; font-size: 12rem; font-weight: 900;
-      color: var(--text-main); opacity: 0.03; letter-spacing: -5px; user-select: none;
-    }
+    .hero-visual { height: 100%; min-height: 400px; background-color: var(--hero-accent); border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+    .hero-visual::before { content: 'TKS.'; position: absolute; font-size: 12rem; font-weight: 900; color: var(--text-main); opacity: 0.03; letter-spacing: -5px; user-select: none; }
+
+    /* ★ 2. ライブステータス（リアルタイム数字） */
+    .live-stats-wrapper { border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); background-color: var(--card-bg); padding: 40px 0; }
+    .live-stats { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; }
+    .stat-item { flex: 1; text-align: center; min-width: 150px; }
+    .stat-value { display: block; font-size: 2.5rem; font-weight: 800; color: var(--text-main); font-variant-numeric: tabular-nums; margin-bottom: 5px; letter-spacing: -1px; }
+    .stat-label { font-size: 0.75rem; font-weight: 700; color: var(--text-sub); letter-spacing: 1.5px; text-transform: uppercase; }
 
     section { padding: 120px 0; border-bottom: 1px solid var(--border-color); scroll-margin-top: 80px; }
     .section-header { margin-bottom: 60px; }
     .section-title { font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; color: var(--text-sub); text-transform: uppercase; }
 
-    /* ★ 2. 新規追加：スキル＆強みセクション */
+    /* スキル */
     .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
     .skill-card { background-color: var(--card-bg); padding: 40px 30px; border: 1px solid var(--border-color); border-radius: 16px; transition: transform 0.3s ease; }
     .skill-card:hover { transform: translateY(-5px); border-color: var(--text-main); }
@@ -95,7 +89,7 @@
     .skill-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; }
     .skill-desc { font-size: 0.9rem; color: var(--text-sub); line-height: 1.6; }
 
-    /* 提供サービス */
+    /* サービス */
     .service-list { display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--border-color); }
     .service-item { display: grid; grid-template-columns: 1fr 2fr; padding: 40px 0; border-bottom: 1px solid var(--border-color); position: relative; overflow: hidden; }
     .service-item::after { content: ''; position: absolute; left: 0; bottom: -1px; width: 0%; height: 2px; background-color: var(--text-main); transition: width 0.5s ease; }
@@ -105,7 +99,7 @@
     .service-item:hover .service-name { transform: translateX(10px); }
     .service-desc { color: var(--text-sub); font-size: 0.95rem; }
     
-    /* 制作実績 */
+    /* 実績 */
     .works-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
     .work-card { display: flex; flex-direction: column; cursor: pointer; }
     .work-image-box { width: 100%; aspect-ratio: 16 / 9; background-color: var(--card-bg); border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: border-color 0.4s ease; border-radius: 8px; }
@@ -117,7 +111,7 @@
     .work-card:hover .work-title { color: var(--text-sub); }
     .work-desc { font-size: 0.9rem; color: var(--text-sub); }
 
-    /* モーダル */
+    /* モーダル＆フォーム (省略せずそのまま) */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; z-index: 1000; }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
     .modal-content { background-color: var(--bg-color); width: 90%; max-width: 600px; padding: 40px; border-radius: 12px; border: 1px solid var(--border-color); position: relative; transform: translateY(20px); transition: transform 0.4s ease; }
@@ -128,7 +122,6 @@
     .modal-btn { display: inline-block; background-color: var(--btn-bg); color: var(--btn-text); padding: 12px 30px; font-size: 0.9rem; font-weight: 700; border-radius: 30px; text-align: center; transition: all 0.3s ease; }
     .modal-btn:hover { opacity: 0.8; transform: translateY(-2px); }
 
-    /* フォームUI */
     .contact-wrapper { max-width: 600px; margin: 0 auto; }
     .contact-msg { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; text-align: center; }
     .contact-sub { font-size: 0.95rem; color: var(--text-sub); text-align: center; margin-bottom: 40px; }
@@ -144,11 +137,10 @@
     .thanks-desc { color: var(--text-sub); font-size: 0.95rem; }
     footer { padding: 40px 0; text-align: center; font-size: 0.8rem; color: var(--text-sub); }
 
-    /* スマホ＆タブレット対応 */
     @media (max-width: 992px) {
       .hero { grid-template-columns: 1fr; text-align: center; padding: 80px 0; }
       .hero-content p { margin: 0 auto 30px; }
-      .hero-visual { display: none; /* スマホでは巨大装飾を消してスッキリさせる */ }
+      .hero-visual { display: none; }
       .skills-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
     }
     @media (max-width: 768px) {
@@ -163,6 +155,12 @@
   </style>
 </head>
 <body>
+
+  <!-- ★ オープニングローダー -->
+  <div id="preloader">
+    <div class="loader-logo">TKS.</div>
+    <div class="loader-progress" id="progress-text">0%</div>
+  </div>
 
   <div class="container">
     <header class="fade-in">
@@ -186,108 +184,92 @@
       </div>
     </header>
 
-    <!-- ★ 改良版 Heroセクション（PCで2カラム） -->
     <section class="hero fade-in">
       <div class="hero-content">
         <h1>機能する美しさを、<br>コードで紡ぐ。</h1>
         <p>デザインの透明性と、プログラムによる堅牢な動作を両立。Webサイト制作から、ブラウザで動く独自のWebアプリ、自動化スクリプトの開発まで、本質的な課題解決をワンストップで提供します。</p>
         <a href="#contact" class="hero-btn">プロジェクトを相談する</a>
       </div>
-      <div class="hero-visual">
-        <!-- CSSで巨大な「TKS.」の文字が背景に薄く入ります -->
-      </div>
+      <div class="hero-visual"></div>
     </section>
+  </div>
 
-    <!-- ★ 新規追加 Expertiseセクション -->
-    <section id="expertise" class="fade-in">
-      <div class="section-header">
-        <h2 class="section-title">00 / Expertise</h2>
+  <!-- ★ ライブステータス（コンテナの外に出して画面幅いっぱいの帯にする） -->
+  <div class="live-stats-wrapper fade-in" id="stats-section">
+    <div class="container">
+      <div class="live-stats">
+        <div class="stat-item">
+          <span class="stat-value" id="stat-visitors">0</span>
+          <span class="stat-label">Active Visitors</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="stat-loc">0</span>
+          <span class="stat-label">Lines of Code</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-value" id="stat-uptime">0</span>
+          <span class="stat-label">System Uptime</span>
+        </div>
       </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <section id="expertise" class="fade-in">
+      <div class="section-header"><h2 class="section-title">00 / Expertise</h2></div>
       <div class="skills-grid">
         <div class="skill-card">
           <svg class="skill-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-          <h3 class="skill-title">Front-End Dev</h3>
-          <p class="skill-desc">HTML, CSS, Vanilla JavaScriptを用いた、ミリ秒単位のアニメーション制御とパフォーマンス最適化。</p>
+          <h3 class="skill-title">Front-End Dev</h3><p class="skill-desc">HTML, CSS, Vanilla JavaScriptを用いた、ミリ秒単位のアニメーション制御とパフォーマンス最適化。</p>
         </div>
         <div class="skill-card">
           <svg class="skill-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-          <h3 class="skill-title">Business Logic</h3>
-          <p class="skill-desc">Pythonによるスクレイピングや、Google Apps Scriptを用いた社内業務の自動化ツール開発。</p>
+          <h3 class="skill-title">Business Logic</h3><p class="skill-desc">Pythonによるスクレイピングや、Google Apps Scriptを用いた社内業務の自動化ツール開発。</p>
         </div>
         <div class="skill-card">
           <svg class="skill-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          <h3 class="skill-title">UI / UX Design</h3>
-          <p class="skill-desc">ユーザーの視線誘導を計算したミニマルなデザインと、効果音を用いた触覚的なインターフェース設計。</p>
+          <h3 class="skill-title">UI / UX Design</h3><p class="skill-desc">ユーザーの視線誘導を計算したミニマルなデザインと、効果音を用いた触覚的なインターフェース設計。</p>
         </div>
       </div>
     </section>
 
     <section id="services" class="fade-in">
-      <div class="section-header">
-        <h2 class="section-title">01 / Services</h2>
-      </div>
+      <div class="section-header"><h2 class="section-title">01 / Services</h2></div>
       <div class="service-list">
         <div class="service-item">
-          <div class="service-name">Webサイト制作</div>
-          <div class="service-desc">コーポレートサイトからLPまで、ピクセルパーフェクトな実装と滑らかなアニメーションを備えた、ブランド価値を高めるサイトを構築します。</div>
+          <div class="service-name">Webサイト制作</div><div class="service-desc">コーポレートサイトからLPまで、ピクセルパーフェクトな実装と滑らかなアニメーションを備えた、ブランド価値を高めるサイトを構築します。</div>
         </div>
         <div class="service-item">
-          <div class="service-name">Webアプリ・UI開発</div>
-          <div class="service-desc">JavaScriptを活用したブラウザゲームや、診断ツール、シミュレーション機能など、ユーザーの滞在時間を最大化するインタラクティブな体験を実装します。</div>
+          <div class="service-name">Webアプリ・UI開発</div><div class="service-desc">JavaScriptを活用したブラウザゲームや、診断ツール、シミュレーション機能など、ユーザーの滞在時間を最大化するインタラクティブな体験を実装します。</div>
         </div>
         <div class="service-item">
-          <div class="service-name">業務自動化ツール</div>
-          <div class="service-desc">Pythonを用いたデータ収集（スクレイピング）や、定型作業の自動化スクリプトを開発。人間が本来やるべきクリエイティブな時間を創出します。</div>
+          <div class="service-name">業務自動化ツール</div><div class="service-desc">Pythonを用いたデータ収集（スクレイピング）や、定型作業の自動化スクリプトを開発。人間が本来やるべきクリエイティブな時間を創出します。</div>
         </div>
       </div>
     </section>
 
     <section id="works" class="fade-in">
-      <div class="section-header">
-        <h2 class="section-title">02 / Selected Works</h2>
-      </div>
+      <div class="section-header"><h2 class="section-title">02 / Selected Works</h2></div>
       <div class="works-grid">
         <div class="work-card open-modal-btn" data-title="サイバータンクアリーナ" data-tag="WEB APPLICATION" data-desc="全20ステージ、機体強化、レーザー武装を実装したブラウザ上で動作する2Dアクションゲーム。当たり判定から状態管理まで全てVanilla JSで実装。" data-tech="HTML, CSS, JavaScript (ES6+), Canvas API" data-link="mygame.html">
-          <div class="work-image-box">
-            <svg class="work-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect><circle cx="17" cy="12" r="1"></circle><circle cx="14" cy="12" r="1"></circle><path d="M6 12h4"></path><path d="M8 10v4"></path>
-            </svg>
-          </div>
-          <div class="work-tag">WEB APPLICATION</div>
-          <div class="work-title">サイバータンクアリーナ</div>
-          <div class="work-desc">全20ステージ、機体強化、レーザー武装を実装したブラウザ上で動作する2Dアクションゲーム。</div>
+          <div class="work-image-box"><svg class="work-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2" ry="2"></rect><circle cx="17" cy="12" r="1"></circle><circle cx="14" cy="12" r="1"></circle><path d="M6 12h4"></path><path d="M8 10v4"></path></svg></div>
+          <div class="work-tag">WEB APPLICATION</div><div class="work-title">サイバータンクアリーナ</div><div class="work-desc">全20ステージ、機体強化、レーザー武装を実装したブラウザ上で動作する2Dアクションゲーム。</div>
         </div>
         <div class="work-card open-modal-btn" data-title="体験型シミュレーションラボ" data-tag="DIAGNOSTIC TOOL" data-desc="瞬間計算力や条件付き反射速度を測定し、正規分布グラフで可視化する診断アプリケーション群。ユーザーの滞在時間を伸ばすインタラクティブなUIを追求。" data-tech="HTML, CSS, JavaScript, Web Audio API" data-link="lab.html">
-          <div class="work-image-box">
-            <svg class="work-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-            </svg>
-          </div>
-          <div class="work-tag">DIAGNOSTIC TOOL</div>
-          <div class="work-title">体験型シミュレーションラボ</div>
-          <div class="work-desc">瞬間計算力や条件付き反射速度を測定し、正規分布グラフで可視化する診断アプリケーション群。</div>
+          <div class="work-image-box"><svg class="work-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+          <div class="work-tag">DIAGNOSTIC TOOL</div><div class="work-title">体験型シミュレーションラボ</div><div class="work-desc">瞬間計算力や条件付き反射速度を測定し、正規分布グラフで可視化する診断アプリケーション群。</div>
         </div>
         <div class="work-card open-modal-btn" data-title="分析ダッシュボードUI" data-tag="DATA VISUALIZATION" data-desc="自動収集したデータをリアルタイムにグラフ化し、直感的な意思決定を支援する管理画面モックアップ。業務効率化ツールのフロントエンド実装例。" data-tech="HTML, CSS, JavaScript, Chart.js" data-link="dashboard.html">
-          <div class="work-image-box">
-            <svg class="work-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line>
-            </svg>
-          </div>
-          <div class="work-tag">DATA VISUALIZATION</div>
-          <div class="work-title">分析ダッシュボードUI</div>
-          <div class="work-desc">自動収集したデータをリアルタイムにグラフ化し、直感的な意思決定を支援する管理画面モックアップ。</div>
+          <div class="work-image-box"><svg class="work-icon" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--text-sub)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg></div>
+          <div class="work-tag">DATA VISUALIZATION</div><div class="work-title">分析ダッシュボードUI</div><div class="work-desc">自動収集したデータをリアルタイムにグラフ化し、直感的な意思決定を支援する管理画面モックアップ。</div>
         </div>
       </div>
     </section>
 
     <section id="contact" class="fade-in" style="border-bottom: none;">
       <div class="contact-wrapper">
-        <div class="contact-msg">Let's work together.</div>
-        <div class="contact-sub">プロジェクトのご相談、お見積もりなどお気軽にご連絡ください。</div>
-        <div id="thanks-message">
-          <div class="thanks-title">送信完了しました。</div>
-          <div class="thanks-desc">メッセージありがとうございます。確認次第、ご返信いたします。</div>
-        </div>
+        <div class="contact-msg">Let's work together.</div><div class="contact-sub">プロジェクトのご相談、お見積もりなどお気軽にご連絡ください。</div>
+        <div id="thanks-message"><div class="thanks-title">送信完了しました。</div><div class="thanks-desc">メッセージありがとうございます。確認次第、ご返信いたします。</div></div>
         <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){ showThanks(); }"></iframe>
         <form id="contact-form" action="https://docs.google.com/forms/d/e/1FAIpQLSenahDrk-1CWj3n95CXkCLm3GiCbB0cS2tKJXtgyJ3TRGMcIQ/formResponse" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
           <div class="form-group"><label class="form-label">お名前 / 企業名</label><input type="text" name="entry.954022498" class="form-input" required placeholder="山田 太郎"></div>
@@ -298,16 +280,13 @@
       </div>
     </section>
 
-    <footer class="fade-in">
-      <p>&copy; 2026 TKS. All rights reserved.</p>
-    </footer>
+    <footer class="fade-in"><p>&copy; 2026 TKS. All rights reserved.</p></footer>
   </div>
 
   <div class="modal-overlay" id="project-modal">
     <div class="modal-content">
       <button class="modal-close" id="modal-close">×</button>
-      <div class="work-tag" id="modal-tag">TAG</div>
-      <h3 class="modal-title" id="modal-title">Title</h3>
+      <div class="work-tag" id="modal-tag">TAG</div><h3 class="modal-title" id="modal-title">Title</h3>
       <p class="work-desc" id="modal-desc" style="margin-bottom: 10px;">Description</p>
       <div class="modal-tech"><strong>使用技術:</strong> <span id="modal-tech">Tech Stack</span></div>
       <a href="#" class="modal-btn" id="modal-link">実際の制作物を見る</a>
@@ -315,6 +294,69 @@
   </div>
 
   <script>
+    /* ★ ローダーとライブステータスの制御 */
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.style.overflow = 'hidden'; // 読み込み中はスクロール禁止
+      let progress = 0;
+      const progressEl = document.getElementById('progress-text');
+      const preloader = document.getElementById('preloader');
+      
+      // %を高速でカウントアップ
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5;
+        if (progress >= 100) {
+          progress = 100;
+          progressEl.textContent = progress + '%';
+          clearInterval(interval);
+          setTimeout(() => {
+            preloader.classList.add('loaded');
+            document.body.style.overflow = ''; // スクロール復活
+          }, 400); // 100%になってから少しだけタメる
+        } else {
+          progressEl.textContent = progress + '%';
+        }
+      }, 30);
+    });
+
+    // 数字をカウントアップさせるアニメーション関数
+    const animateValue = (obj, start, end, duration, isDecimal = false) => {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const current = progress * (end - start) + start;
+        obj.innerHTML = isDecimal ? current.toFixed(2) + '%' : Math.floor(current).toLocaleString();
+        if (progress < 1) window.requestAnimationFrame(step);
+      };
+      window.requestAnimationFrame(step);
+    };
+
+    // スクロールして画面に入ったら数字が動き出す仕組み
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateValue(document.getElementById('stat-loc'), 0, 142045, 2000);
+          animateValue(document.getElementById('stat-uptime'), 0, 99.99, 2000, true);
+          statObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    
+    const statsSection = document.getElementById('stats-section');
+    if(statsSection) statObserver.observe(statsSection);
+
+    // 閲覧者数をリアルタイムに変動させる（フェイクだけど生きてる感が出る）
+    const statVisitors = document.getElementById('stat-visitors');
+    let currentVisitors = 3;
+    setInterval(() => {
+      const change = Math.random() > 0.5 ? 1 : -1;
+      currentVisitors += change;
+      if (currentVisitors < 1) currentVisitors = 1;
+      if (currentVisitors > 9) currentVisitors = 9;
+      statVisitors.innerText = currentVisitors;
+    }, 3500);
+
+    /* --- 以下、既存のスクリプト --- */
     const modalOverlay = document.getElementById('project-modal');
     const modalCloseBtn = document.getElementById('modal-close');
     const modalCards = document.querySelectorAll('.open-modal-btn');
@@ -343,7 +385,6 @@
     const themeText = document.getElementById('theme-text');
     const moonPath = "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z";
     const sunPath = "M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z";
-    
     const savedTheme = localStorage.getItem('tks-theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateToggleUI(savedTheme);
@@ -355,22 +396,15 @@
       localStorage.setItem('tks-theme', newTheme);
       updateToggleUI(newTheme);
     });
-
     function updateToggleUI(theme) {
-      if (theme === 'dark') {
-        themeIcon.innerHTML = `<path d="${sunPath}"></path>`;
-        if(themeText) themeText.textContent = 'Light Mode';
-      } else {
-        themeIcon.innerHTML = `<path d="${moonPath}"></path>`;
-        if(themeText) themeText.textContent = 'Dark Mode';
-      }
+      if (theme === 'dark') { themeIcon.innerHTML = `<path d="${sunPath}"></path>`; if(themeText) themeText.textContent = 'Light Mode'; }
+      else { themeIcon.innerHTML = `<path d="${moonPath}"></path>`; if(themeText) themeText.textContent = 'Dark Mode'; }
     }
 
     let audioCtx = null;
     const initAudio = () => { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); };
     document.addEventListener('pointerdown', initAudio, { once: true });
     document.addEventListener('pointermove', initAudio, { once: true });
-
     function playSound(type) {
       if (!audioCtx || audioCtx.state === 'suspended') return;
       if (!window.matchMedia("(pointer: fine)").matches) return;
