@@ -4,15 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <!-- 【SEO＆OGP設定】検索エンジンとSNSシェア用の名刺 -->
   <title>TKS | Web Design & Development</title>
   <meta name="description" content="デザインの透明性とプログラムによる堅牢な動作を両立。Webサイト制作、独自Webアプリ、業務自動化スクリプトの開発までワンストップで提供します。">
   <meta property="og:title" content="TKS | Web Design & Development">
   <meta property="og:description" content="デザインと技術を両立したWeb制作・開発ポートフォリオ。">
   <meta property="og:type" content="website">
-  <!-- 検索エンジン（Search Console）登録用の枠（後でここにコードを入れます） -->
-  <meta name="google-site-verification" content="bM9akHj-158HRT1VCFUzY7iqJf1Bjtkt7MliwHZps-Q" />
   
+  <!-- ↓ 昨日登録したサチコのタグはここにコピペして残しておいてね ↓ -->
+  <meta name="google-site-verification" content="bM9akHj-lS8HRTlVCFUzY7iqJf1Bjtkt7MliwHZps-Q" />
+
   <style>
     /* テーマ変数 */
     :root {
@@ -26,6 +26,9 @@
       --card-bg: #111113; --hover-bg: #1a1a1d; --input-bg: #0a0a0c;
     }
 
+    /* スムーススクロール（リンクを押した時にヌルッと移動する） */
+    html { scroll-behavior: smooth; }
+    
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background-color: var(--bg-color); color: var(--text-main);
@@ -36,23 +39,31 @@
     a { text-decoration: none; color: inherit; display: block; }
     .container { max-width: 1080px; margin: 0 auto; padding: 0 5%; }
 
-    /* ★ スクロール浮き上がりアニメーション（Apple風） */
+    /* スクロール浮き上がりアニメーション */
     .fade-in {
-      opacity: 0;
-      transform: translateY(30px);
+      opacity: 0; transform: translateY(30px);
       transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
 
-    /* ヘッダー */
+    /* ヘッダー周り */
     header {
       display: flex; justify-content: space-between; align-items: center;
       padding: 30px 0; border-bottom: 1px solid var(--border-color);
+      position: relative; z-index: 100;
     }
-    .logo { font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; }
+    .logo { font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; position: relative; z-index: 101; }
+    
+    /* PC用ナビゲーション */
+    .global-nav {
+      display: flex; gap: 40px; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px;
+    }
+    .global-nav a { transition: color 0.3s ease; }
+    .global-nav a:hover { color: var(--text-sub); }
+
+    .header-controls { display: flex; align-items: center; gap: 20px; z-index: 101; }
+
+    /* ダークモードスイッチ */
     .theme-switch {
       background: none; border: 1px solid var(--border-color); color: var(--text-main);
       padding: 8px 16px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
@@ -61,12 +72,44 @@
     }
     .theme-switch:hover { background-color: var(--text-main); color: var(--bg-color); transform: translateY(-2px); }
 
+    /* ★ スマホ用ハンバーガーボタン（PCでは非表示） */
+    .hamburger {
+      display: none; background: none; border: none; cursor: pointer;
+      width: 24px; height: 16px; position: relative; z-index: 101;
+    }
+    .hamburger span {
+      position: absolute; width: 100%; height: 2px; background-color: var(--text-main);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); left: 0;
+    }
+    .hamburger span:nth-child(1) { top: 0; }
+    .hamburger span:nth-child(2) { top: 7px; }
+    .hamburger span:nth-child(3) { bottom: 0; }
+    
+    /* ハンバーガーが「✖」になるアニメーション */
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* スマホ表示時の設定 (768px以下) */
+    @media (max-width: 768px) {
+      .hamburger { display: block; }
+      /* メニューを全画面のオーバーレイに変更 */
+      .global-nav {
+        position: fixed; top: 0; right: -100%; width: 100%; height: 100vh;
+        background-color: var(--bg-color); flex-direction: column; justify-content: center; align-items: center;
+        transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; gap: 40px; font-size: 1.5rem;
+      }
+      .global-nav.open { right: 0; }
+      .theme-switch span { display: none; /* スマホではアイコンだけにしてスッキリさせる */ }
+      .theme-switch { padding: 8px; border-radius: 50%; }
+    }
+
     /* メインビジュアル */
     .hero { padding: 140px 0 120px; border-bottom: 1px solid var(--border-color); }
     .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 30px; }
     .hero p { font-size: 1.1rem; color: var(--text-sub); max-width: 600px; line-height: 1.8; }
 
-    section { padding: 100px 0; border-bottom: 1px solid var(--border-color); }
+    section { padding: 100px 0; border-bottom: 1px solid var(--border-color); scroll-margin-top: 50px; }
     .section-header { margin-bottom: 60px; }
     .section-title { font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; color: var(--text-sub); text-transform: uppercase; }
 
@@ -86,6 +129,11 @@
     .service-item:hover .service-name { transform: translateX(10px); }
     .service-desc { color: var(--text-sub); font-size: 0.95rem; }
 
+    @media (max-width: 768px) {
+      .service-item { grid-template-columns: 1fr; gap: 10px; }
+      .service-item:hover .service-name { transform: none; }
+    }
+
     /* 制作実績 */
     .works-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
     .work-card { display: flex; flex-direction: column; cursor: pointer; }
@@ -103,7 +151,7 @@
     .work-card:hover .work-title { color: var(--text-sub); }
     .work-desc { font-size: 0.9rem; color: var(--text-sub); }
 
-    /* ★ 高レベル：コンタクトフォームUI（Googleフォーム連携用） */
+    /* コンタクトフォームUI */
     .contact-wrapper { max-width: 600px; margin: 0 auto; }
     .contact-msg { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; text-align: center; }
     .contact-sub { font-size: 0.95rem; color: var(--text-sub); text-align: center; margin-bottom: 40px; }
@@ -126,7 +174,6 @@
     }
     .submit-btn:hover { opacity: 0.8; transform: translateY(-2px); }
 
-    /* 送信完了メッセージ（初期は非表示） */
     #thanks-message {
       display: none; text-align: center; padding: 40px;
       background-color: var(--hover-bg); border-radius: 8px; border: 1px solid var(--border-color);
@@ -135,11 +182,6 @@
     .thanks-desc { color: var(--text-sub); font-size: 0.95rem; }
 
     footer { padding: 40px 0; text-align: center; font-size: 0.8rem; color: var(--text-sub); }
-
-    @media (max-width: 768px) {
-      .service-item { grid-template-columns: 1fr; gap: 10px; }
-      .service-item:hover .service-name { transform: none; }
-    }
   </style>
 </head>
 <body>
@@ -147,12 +189,27 @@
   <div class="container">
     <header class="fade-in">
       <div class="logo">TKS.</div>
-      <button class="theme-switch" id="theme-toggle" aria-label="Toggle Theme">
-        <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-        <span id="theme-text">Dark Mode</span>
-      </button>
+      
+      <!-- 追加：グローバルナビゲーション -->
+      <nav class="global-nav" id="global-nav">
+        <a href="#services">Services</a>
+        <a href="#works">Works</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <div class="header-controls">
+        <button class="theme-switch" id="theme-toggle" aria-label="Toggle Theme">
+          <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <span id="theme-text">Dark Mode</span>
+        </button>
+        
+        <!-- 追加：ハンバーガーボタン -->
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
     </header>
 
     <section class="hero fade-in">
@@ -160,7 +217,8 @@
       <p>デザインの透明性と、プログラムによる堅牢な動作を両立。Webサイト制作から、ブラウザで動く独自のWebアプリ、自動化スクリプトの開発まで、本質的な課題解決をワンストップで提供します。</p>
     </section>
 
-    <section class="fade-in">
+    <!-- id="services" を追加してメニューから飛べるようにしたよ -->
+    <section id="services" class="fade-in">
       <div class="section-header">
         <h2 class="section-title">01 / Services</h2>
       </div>
@@ -180,7 +238,8 @@
       </div>
     </section>
 
-    <section class="fade-in">
+    <!-- id="works" を追加 -->
+    <section id="works" class="fade-in">
       <div class="section-header">
         <h2 class="section-title">02 / Selected Works</h2>
       </div>
@@ -222,23 +281,20 @@
       </div>
     </section>
 
-    <!-- ★ コンタクトフォーム（画面遷移なしのプロ仕様） -->
-    <section class="fade-in" style="border-bottom: none;">
+    <!-- id="contact" を追加 -->
+    <section id="contact" class="fade-in" style="border-bottom: none;">
       <div class="contact-wrapper">
         <div class="contact-msg">Let's work together.</div>
         <div class="contact-sub">プロジェクトのご相談、お見積もりなどお気軽にご連絡ください。</div>
         
-        <!-- 送信完了メッセージ -->
         <div id="thanks-message">
           <div class="thanks-title">送信完了しました。</div>
           <div class="thanks-desc">メッセージありがとうございます。確認次第、ご返信いたします。</div>
         </div>
 
-        <!-- 隠しiframe（ここにデータを送信して画面遷移を防ぐ） -->
         <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;" onload="if(submitted){ showThanks(); }"></iframe>
 
-        <!-- 入力フォーム本体 -->
-        <!-- ★ 後でこの action のURLと、input の name 属性をGoogleフォームのものに書き換えます -->
+        <!-- フォームの裏側は自分のGoogleフォームのIDに直してね -->
         <form id="contact-form" action="#" method="POST" target="hidden_iframe" onsubmit="submitted=true;">
           <div class="form-group">
             <label class="form-label">お名前 / 企業名</label>
@@ -263,6 +319,25 @@
   </div>
 
   <script>
+    /* --- ハンバーガーメニュー制御（新規追加） --- */
+    const hamburger = document.getElementById('hamburger');
+    const globalNav = document.getElementById('global-nav');
+    const navLinks = document.querySelectorAll('.global-nav a');
+
+    // ボタンを押したらメニュー開閉
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      globalNav.classList.toggle('open');
+    });
+
+    // メニューのリンクを押したらメニューを閉じる
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        globalNav.classList.remove('open');
+      });
+    });
+
     /* --- ダークモード・効果音制御 --- */
     const toggleBtn = document.getElementById('theme-toggle');
     const themeIcon = document.getElementById('theme-icon');
@@ -285,10 +360,10 @@
     function updateToggleUI(theme) {
       if (theme === 'dark') {
         themeIcon.innerHTML = `<path d="${sunPath}"></path>`;
-        themeText.textContent = 'Light Mode';
+        if(themeText) themeText.textContent = 'Light Mode';
       } else {
         themeIcon.innerHTML = `<path d="${moonPath}"></path>`;
-        themeText.textContent = 'Dark Mode';
+        if(themeText) themeText.textContent = 'Dark Mode';
       }
     }
 
@@ -327,7 +402,7 @@
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
-          observer.unobserve(entry.target); // 一度発火したら監視終了
+          observer.unobserve(entry.target);
         }
       });
     }, observerOptions);
@@ -336,10 +411,9 @@
       observer.observe(el);
     });
 
-    /* --- フォーム送信制御（画面遷移防止） --- */
+    /* --- フォーム送信制御 --- */
     let submitted = false;
     function showThanks() {
-      // 送信完了時にフォームを消してメッセージを出す
       document.getElementById('contact-form').style.display = 'none';
       document.getElementById('thanks-message').style.display = 'block';
     }
