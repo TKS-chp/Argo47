@@ -268,6 +268,15 @@
       </div>
     </section>
   </div>
+  <div class="trend-board">
+  <h2>Zenn トレンド記事</h2>
+  <ul id="zenn-list"></ul>
+</div>
+
+<div class="trend-board">
+  <h2>Hacker News トップ</h2>
+  <ul id="hn-list"></ul>
+</div>
 
   <div class="live-stats-wrapper fade-in" id="stats-section">
     <div class="container">
@@ -540,5 +549,30 @@
     let submitted = false;
     function showThanks() { document.getElementById('contact-form').style.display = 'none'; document.getElementById('thanks-message').style.display = 'block'; }
   </script>
+  <script>
+  // Zennのデータを読み込んでリスト化
+  fetch('./zenn_trend.json')
+    .then(response => response.json())
+    .then(data => {
+      const list = document.getElementById('zenn-list');
+      data.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>`;
+        list.appendChild(li);
+      });
+    });
+
+  // Hacker Newsのデータを読み込んでリスト化
+  fetch('./hn_top.json')
+    .then(response => response.json())
+    .then(data => {
+      const list = document.getElementById('hn-list');
+      data.forEach(item => {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title} <small>(スコア: ${item.score})</small></a>`;
+        list.appendChild(li);
+      });
+    });
+</script>
 </body>
 </html>
