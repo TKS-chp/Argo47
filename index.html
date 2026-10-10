@@ -268,14 +268,47 @@
       </div>
     </section>
   </div>
-  <div class="trend-board">
+  <!-- 270行目の </div> の下にこれを貼り付け -->
+<style>
+  /* ニュースボード全体の幅や余白 */
+  .trend-board { max-width: 1000px; margin: 40px auto; padding: 0 20px; }
+  .trend-board h2 { font-size: 1.5rem; margin-bottom: 20px; border-bottom: 1px solid #333; padding-bottom: 10px; color: #fff; }
+
+  /* カードを横並びにするグリッド設定 */
+  .news-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+
+  /* カード本体のデザイン */
+  .news-card {
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 16px;
+    text-decoration: none;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.2s ease;
+  }
+
+  /* マウスを乗せた時のホバーエフェクト */
+  .news-card:hover {
+    transform: translateY(-3px);
+    border-color: #666;
+    background: #222;
+  }
+
+  .news-title { font-weight: bold; font-size: 1rem; margin-bottom: 8px; line-height: 1.4; }
+  .news-meta { font-size: 0.8rem; color: #888; }
+</style>
+
+<div class="trend-board">
   <h2>Zenn トレンド記事</h2>
-  <ul id="zenn-list"></ul>
+  <div id="zenn-list" class="news-grid"></div>
 </div>
 
 <div class="trend-board">
   <h2>Hacker News トップ</h2>
-  <ul id="hn-list"></ul>
+  <div id="hn-list" class="news-grid"></div>
 </div>
 
   <div class="live-stats-wrapper fade-in" id="stats-section">
