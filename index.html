@@ -9,18 +9,21 @@
   <meta name="google-site-verification" content="bM9akHj-lS8HRTlVCFUzY7iqJf1Bjtkt7MliwHZps-Q" />
 
   <style>
-    /* テーマ変数 */
     :root {
       --bg-color: #fbfbfb; --text-main: #111317; --text-sub: #666666;
       --border-color: #e5e5e5; --btn-bg: #111317; --btn-text: #ffffff;
       --card-bg: #ffffff; --hover-bg: #f5f5f5; --input-bg: #ffffff;
-      --hero-accent: #f0f0f0; --code-flow: rgba(17, 19, 23, 0.03);
+      --hero-accent: #f0f0f0; 
+      /* ★ 背景のコードの色を濃くした */
+      --code-flow: rgba(17, 19, 23, 0.08); 
     }
     [data-theme="dark"] {
       --bg-color: #0a0a0c; --text-main: #f5f5f7; --text-sub: #86868b;
       --border-color: #262629; --btn-bg: #f5f5f7; --btn-text: #0a0a0c;
       --card-bg: #111113; --hover-bg: #1a1a1d; --input-bg: #0a0a0c;
-      --hero-accent: #111113; --code-flow: rgba(245, 245, 247, 0.03);
+      --hero-accent: #111113; 
+      /* ★ ダークモードでも濃くした */
+      --code-flow: rgba(245, 245, 247, 0.12);
     }
 
     html { scroll-behavior: smooth; }
@@ -34,35 +37,33 @@
     a { text-decoration: none; color: inherit; display: block; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 10; }
 
-    /* ★ 背景の流れるコードアニメーション */
+    /* 背景コード */
     .bg-code-flow { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; display: flex; flex-direction: column; justify-content: space-around; }
-    .code-track { display: flex; white-space: nowrap; font-family: 'Courier New', Courier, monospace; font-size: 1.5rem; font-weight: 700; color: var(--text-main); opacity: 0.03; transition: opacity 0.4s; }
-    [data-theme="dark"] .code-track { opacity: 0.04; }
+    .code-track { display: flex; white-space: nowrap; font-family: 'Courier New', Courier, monospace; font-size: 1.5rem; font-weight: 700; color: var(--code-flow); transition: color 0.4s; }
     .code-track span { padding-right: 50px; }
     .track-left { animation: flow-left 40s linear infinite; }
     .track-right { animation: flow-right 50s linear infinite; }
     @keyframes flow-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
     @keyframes flow-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
-    /* オープニングローダー */
+    /* ローダーとピクセルキャンバス */
     #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: var(--text-main); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: transform 0.8s cubic-bezier(0.86, 0, 0.07, 1); }
     #preloader.loaded { transform: translateY(-100%); }
     .loader-logo { font-size: 2.5rem; font-weight: 900; letter-spacing: 4px; color: var(--bg-color); margin-bottom: 10px; }
     .loader-progress { font-size: 1rem; font-weight: 600; color: var(--text-sub); font-variant-numeric: tabular-nums; }
-
-    /* ピクセルキャンバス */
     #pixel-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; z-index: 9998; }
 
-    /* サイドオーダー風グリッチ出現 */
-    .fade-in { opacity: 0; filter: grayscale(100%) contrast(200%); }
-    .fade-in.visible { animation: side-order-reveal 0.6s steps(5, end) forwards; }
-    @keyframes side-order-reveal {
-      0%   { opacity: 0; clip-path: inset(10% 0 80% 0); transform: translateX(-10px); }
-      20%  { opacity: 1; clip-path: inset(60% 20% 10% 0); transform: translateX(10px); }
-      40%  { clip-path: inset(0 0 50% 30%); transform: translateX(-5px); filter: grayscale(50%) contrast(150%); }
-      60%  { clip-path: inset(20% 0 0 0); transform: translateX(5px); }
-      80%  { clip-path: inset(5% 5% 5% 5%); transform: translateX(0); }
-      100% { opacity: 1; clip-path: inset(0 0 0 0); transform: none; filter: none; }
+    /* ★ スクロール出現：ピクセル（ドット）風のブロックアニメーションに統一 */
+    .fade-in { opacity: 0; filter: grayscale(100%); transform: translateY(20px); }
+    .fade-in.visible {
+      /* steps() を使ってカクカクとした8-bit風の動きにする */
+      animation: pixel-scroll-reveal 0.5s steps(6, end) forwards;
+    }
+    @keyframes pixel-scroll-reveal {
+      0%   { opacity: 0; transform: translateY(20px); clip-path: polygon(0 10%, 100% 20%, 100% 80%, 0 90%); }
+      30%  { opacity: 0.5; transform: translateY(10px); clip-path: polygon(0 0, 100% 10%, 100% 90%, 0 100%); filter: grayscale(50%); }
+      60%  { opacity: 0.8; transform: translateY(5px); clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%); }
+      100% { opacity: 1; transform: translateY(0); clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); filter: grayscale(0%); }
     }
 
     /* ヘッダー */
@@ -79,18 +80,36 @@
     .hamburger span:nth-child(1) { top: 0; } .hamburger span:nth-child(2) { top: 7px; } .hamburger span:nth-child(3) { bottom: 0; }
     .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); } .hamburger.open span:nth-child(2) { opacity: 0; } .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* ★ 映像背景化されたトップ画面 */
+    /* ★ トップ画面 (タイピング用に行揃え) */
     .hero { padding: 120px 0 80px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; }
-    .hero-content h1 { font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 30px; }
+    
+    .hero-text-box {
+      /* タイピング中にガタガタしないよう、左揃えで枠を固定 */
+      text-align: left;
+      min-height: 140px; 
+      margin-bottom: 30px;
+    }
+    .hero-text-box h1 {
+      font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em;
+      white-space: pre-wrap; /* 改行を認識させる */
+      display: inline-block;
+    }
+    /* タイピングのカーソル（チカチカ点滅） */
+    .typing-cursor {
+      display: inline-block; width: 4px; height: 1em; background-color: var(--text-main);
+      margin-left: 5px; vertical-align: middle; animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
     .hero-content p { font-size: 1.1rem; color: var(--text-sub); line-height: 1.8; margin-bottom: 40px; }
     .hero-btn { display: inline-block; padding: 14px 32px; background-color: var(--btn-bg); color: var(--btn-text); border-radius: 30px; font-weight: 600; font-size: 0.9rem; transition: transform 0.3s ease, opacity 0.3s ease; }
     .hero-btn:hover { opacity: 0.9; transform: translateY(-3px); }
     
+    /* 動画エリア */
     .hero-visual { height: 100%; min-height: 450px; background-color: var(--hero-accent); border-radius: 20px; position: relative; overflow: hidden; border: 1px solid var(--border-color); }
     .hero-video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; filter: grayscale(20%); transition: filter 0.5s ease; }
     .hero-visual:hover .hero-video { filter: grayscale(0%); }
     .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0)); pointer-events: none; }
-    /* 動画がない時のダミーテキスト（動画入れたら消えます） */
     .video-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--text-sub); font-size: 0.9rem; text-align: center; font-weight: 700; z-index: 0; }
 
     /* ライブステータス */
@@ -104,15 +123,13 @@
     .section-header { margin-bottom: 60px; }
     .section-title { font-size: 0.85rem; font-weight: 700; letter-spacing: 2px; color: var(--text-sub); text-transform: uppercase; }
 
-    /* スキル */
+    /* スキル・サービス・実績・フォーム（デザインそのまま） */
     .skills-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
     .skill-card { background-color: var(--card-bg); padding: 40px 30px; border: 1px solid var(--border-color); border-radius: 16px; transition: transform 0.3s ease; }
     .skill-card:hover { transform: translateY(-5px); border-color: var(--text-main); }
     .skill-icon { margin-bottom: 20px; color: var(--text-main); }
     .skill-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 15px; }
     .skill-desc { font-size: 0.9rem; color: var(--text-sub); line-height: 1.6; }
-
-    /* サービス */
     .service-list { display: grid; grid-template-columns: 1fr; border-top: 1px solid var(--border-color); }
     .service-item { display: grid; grid-template-columns: 1fr 2fr; padding: 40px 0; border-bottom: 1px solid var(--border-color); position: relative; overflow: hidden; }
     .service-item::after { content: ''; position: absolute; left: 0; bottom: -1px; width: 0%; height: 2px; background-color: var(--text-main); transition: width 0.5s ease; }
@@ -121,8 +138,6 @@
     .service-name { font-size: 1.5rem; font-weight: 600; transition: transform 0.3s ease; }
     .service-item:hover .service-name { transform: translateX(10px); }
     .service-desc { color: var(--text-sub); font-size: 0.95rem; }
-    
-    /* 実績 */
     .works-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
     .work-card { display: flex; flex-direction: column; cursor: pointer; }
     .work-image-box { width: 100%; aspect-ratio: 16 / 9; background-color: var(--card-bg); border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: border-color 0.4s ease; border-radius: 8px; }
@@ -133,8 +148,6 @@
     .work-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; transition: color 0.3s; }
     .work-card:hover .work-title { color: var(--text-sub); }
     .work-desc { font-size: 0.9rem; color: var(--text-sub); }
-
-    /* モーダル＆フォーム */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.1s ease; z-index: 1000; }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
     .modal-content { background-color: var(--bg-color); width: 90%; max-width: 600px; padding: 40px; border-radius: 12px; border: 1px solid var(--border-color); position: relative; }
@@ -143,7 +156,6 @@
     .modal-tech { background-color: var(--hover-bg); padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 0.85rem; color: var(--text-main); border: 1px solid var(--border-color); }
     .modal-btn { display: inline-block; background-color: var(--btn-bg); color: var(--btn-text); padding: 12px 30px; font-size: 0.9rem; font-weight: 700; border-radius: 30px; text-align: center; transition: all 0.3s ease; }
     .modal-btn:hover { opacity: 0.8; transform: translateY(-2px); }
-
     .contact-wrapper { max-width: 600px; margin: 0 auto; }
     .contact-msg { font-size: 1.5rem; font-weight: 600; margin-bottom: 10px; text-align: center; }
     .contact-sub { font-size: 0.95rem; color: var(--text-sub); text-align: center; margin-bottom: 40px; }
@@ -161,6 +173,7 @@
 
     @media (max-width: 992px) {
       .hero { grid-template-columns: 1fr; text-align: center; padding: 80px 0; }
+      .hero-text-box { text-align: center; min-height: 100px; }
       .hero-content p { margin: 0 auto 30px; }
       .hero-visual { display: none; }
       .skills-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
@@ -169,7 +182,7 @@
 </head>
 <body>
 
-  <!-- ★ 追加：背景で流れるプログラミングコード -->
+  <!-- 背景で流れるプログラミングコード -->
   <div class="bg-code-flow">
     <div class="code-track track-left">
       <span>const TKS = new Developer({ skills: ['HTML', 'CSS', 'Vanilla JS', 'Python'] }); TKS.initialize();</span>
@@ -212,14 +225,15 @@
 
     <section class="hero fade-in">
       <div class="hero-content">
-        <h1>機能する美しさを、<br>コードで紡ぐ。</h1>
+        <!-- ★ タイピングアニメーションの枠 -->
+        <div class="hero-text-box">
+          <h1 id="typing-text"></h1><span class="typing-cursor"></span>
+        </div>
         <p>デザインの透明性と、プログラムによる堅牢な動作を両立。Webサイト制作から、ブラウザで動く独自のWebアプリ、自動化スクリプトの開発まで、本質的な課題解決をワンストップで提供します。</p>
         <a href="#contact" class="hero-btn">プロジェクトを相談する</a>
       </div>
-      <!-- ★ 追加：マクラーレンやコード映像を入れる枠 -->
       <div class="hero-visual">
         <div class="video-placeholder">Video Area<br>(Replace src with your .mp4)</div>
-        <!-- 自分で動画を撮ったりダウンロードしたら、src="movie.mp4" みたいに書き換えてね！ -->
         <video src="" autoplay loop muted playsinline class="hero-video"></video>
         <div class="video-overlay"></div>
       </div>
@@ -230,7 +244,7 @@
     <div class="container">
       <div class="live-stats">
         <div class="stat-item"><span class="stat-value" id="stat-visitors">0</span><span class="stat-label">Active Visitors</span></div>
-        <div class="stat-item"><span class="stat-value" id="stat-loc">0</span><span class="stat-label">Lines of Code</span></div>
+        <div class="stat-item"><span class="stat-value" id="stat-repos">0</span><span class="stat-label">GitHub Repos</span></div>
         <div class="stat-item"><span class="stat-value" id="stat-uptime">0</span><span class="stat-label">System Uptime</span></div>
       </div>
     </div>
@@ -299,12 +313,11 @@
   </div>
 
   <script>
-    /* ★ ピクセルトランジション（パワーアップ版） */
+    /* ピクセルトランジション（Canvas） */
     const canvas = document.getElementById('pixel-transition');
     const ctx = canvas.getContext('2d');
     let isAnimating = false;
 
-    // isThemeToggleがtrueならテーマ色、falseならメイン文字色（黒or白）で塗りつぶす
     function doPixelTransition(callback, isThemeToggle = false) {
       if (isAnimating) return;
       isAnimating = true;
@@ -320,7 +333,6 @@
         const nextTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
         fillColor = nextTheme === 'dark' ? '#0a0a0c' : '#fbfbfb';
       } else {
-        // カード開閉時は「一番目立つ文字色（黒か白）」を使ってバグったように画面を覆う
         fillColor = getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim();
       }
 
@@ -348,14 +360,12 @@
       fillBlocks();
     }
 
-    /* モーダル表示（★ ピクセルエフェクトと完全連携！） */
+    /* モーダル表示 */
     const modalOverlay = document.getElementById('project-modal');
     const modalCloseBtn = document.getElementById('modal-close');
     const modalCards = document.querySelectorAll('.open-modal-btn');
-    
     modalCards.forEach(card => {
       card.addEventListener('click', () => {
-        // カードをクリックしたらピクセルで埋め尽くし、画面が隠れた瞬間にモーダルをONにする
         doPixelTransition(() => {
           document.getElementById('modal-title').textContent = card.getAttribute('data-title');
           document.getElementById('modal-tag').textContent = card.getAttribute('data-tag');
@@ -366,13 +376,7 @@
         }, false);
       });
     });
-
-    const closeModal = () => {
-      // 閉じる時もピクセルエフェクト発動
-      doPixelTransition(() => {
-        modalOverlay.classList.remove('active'); document.body.style.overflow = 'auto';
-      }, false);
-    };
+    const closeModal = () => { doPixelTransition(() => { modalOverlay.classList.remove('active'); document.body.style.overflow = 'auto'; }, false); };
     modalCloseBtn.addEventListener('click', closeModal);
 
     /* テーマ切り替え */
@@ -381,7 +385,6 @@
     const themeText = document.getElementById('theme-text');
     const moonPath = "M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z";
     const sunPath = "M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z";
-    
     const savedTheme = localStorage.getItem('tks-theme') || 'light';
     document.documentElement.setAttribute('data-theme', savedTheme);
     updateToggleUI(savedTheme);
@@ -393,7 +396,7 @@
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('tks-theme', newTheme);
         updateToggleUI(newTheme);
-      }, true); // テーマ切り替え時はtrue
+      }, true);
     });
 
     function updateToggleUI(theme) {
@@ -401,16 +404,62 @@
       else { themeIcon.innerHTML = `<path d="${moonPath}"></path>`; if(themeText) themeText.textContent = 'Dark Mode'; }
     }
 
-    /* ローダーとライブステータス */
+    /* ★ タイピングアニメーション関数 */
+    function typeText() {
+      const text = "機能する美しさを、\nコードで紡ぐ。";
+      const typingEl = document.getElementById('typing-text');
+      let i = 0;
+      typingEl.innerHTML = '';
+      
+      const typeInterval = setInterval(() => {
+        if (i < text.length) {
+          if (text.charAt(i) === '\n') {
+            typingEl.innerHTML += '<br>';
+          } else {
+            typingEl.innerHTML += text.charAt(i);
+          }
+          i++;
+        } else {
+          clearInterval(typeInterval);
+        }
+      }, 150); // タイピング速度（ミリ秒）
+    }
+
+    /* ローダーと初期化 */
     window.addEventListener('DOMContentLoaded', () => {
       document.body.style.overflow = 'hidden'; 
       let progress = 0; const progressEl = document.getElementById('progress-text'); const preloader = document.getElementById('preloader');
       const interval = setInterval(() => {
         progress += Math.floor(Math.random() * 15) + 5;
-        if (progress >= 100) { progress = 100; progressEl.textContent = progress + '%'; clearInterval(interval); setTimeout(() => { preloader.classList.add('loaded'); document.body.style.overflow = ''; }, 400); } 
+        if (progress >= 100) { 
+          progress = 100; progressEl.textContent = progress + '%'; clearInterval(interval); 
+          setTimeout(() => { 
+            preloader.classList.add('loaded'); document.body.style.overflow = ''; 
+            // 画面が開いた瞬間にタイピング開始！
+            setTimeout(typeText, 300);
+          }, 400); 
+        } 
         else { progressEl.textContent = progress + '%'; }
       }, 30);
     });
+
+    /* ★ ガチのAPI通信設定（GitHub APIで本物のリポジトリ数を取る準備） */
+    async function fetchGitHubStats() {
+      const repoEl = document.getElementById('stat-repos');
+      try {
+        // 例: 'microsoft' の部分を自分のGitHubのID（ユーザー名）に変えれば、本物の数字が拾えるに！
+        const githubId = 'microsoft'; 
+        const res = await fetch(`https://api.github.com/users/${githubId}`);
+        const data = await res.json();
+        if(data.public_repos !== undefined) {
+          animateValue(repoEl, 0, data.public_repos, 2000);
+        } else {
+          animateValue(repoEl, 0, 42, 2000); // エラー時はフェイク数字
+        }
+      } catch(e) {
+        animateValue(repoEl, 0, 42, 2000); // 通信失敗時もフェイク数字
+      }
+    }
 
     const animateValue = (obj, start, end, duration, isDecimal = false) => {
       let startTimestamp = null;
@@ -426,7 +475,7 @@
     const statObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          animateValue(document.getElementById('stat-loc'), 0, 142045, 2000);
+          fetchGitHubStats(); // 画面に入ったらGitHubの通信スタート！
           animateValue(document.getElementById('stat-uptime'), 0, 99.99, 2000, true);
           statObserver.unobserve(entry.target);
         }
