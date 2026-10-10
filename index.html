@@ -173,12 +173,37 @@
     .thanks-desc { color: var(--text-sub); font-size: 0.95rem; }
     footer { padding: 40px 0; text-align: center; font-size: 0.8rem; color: var(--text-sub); position: relative; z-index: 10; }
 
+    /* ★ 修正：横揺れ（はみ出し）を強制ブロック */
+    body { overflow-x: hidden; width: 100%; }
+
+    /* ★ 修正：スマホ・タブレット版のレイアウト最適化 */
     @media (max-width: 992px) {
-      .hero { grid-template-columns: 1fr; text-align: center; padding: 80px 0; }
-      .hero-text-box { text-align: center; min-height: 100px; }
+      /* はみ出しの原因だった枠の広がり（margin）をリセット */
+      header { margin: 0; padding: 20px 0; }
+      .hero { grid-template-columns: 1fr; text-align: center; padding: 60px 0; margin: 0; }
+      .hero-text-box { text-align: center; min-height: auto; }
       .hero-content p { margin: 0 auto 30px; }
-      .hero-visual { display: none; }
+      
+      /* ★ スマホでも動画を復活させて、ちょうどいいサイズに調整 */
+      .hero-visual { 
+        display: block; 
+        width: 100%; 
+        height: 250px; /* スマホ向けの縦幅 */
+        min-height: auto; 
+        margin-top: 40px; 
+        border-radius: 16px; 
+      }
       .skills-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    }
+    
+    @media (max-width: 768px) {
+      .hamburger { display: block; }
+      .global-nav { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background-color: var(--bg-color); flex-direction: column; justify-content: center; align-items: center; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; gap: 40px; font-size: 1.5rem; }
+      .global-nav.open { right: 0; }
+      .theme-switch span { display: none; }
+      .theme-switch { padding: 8px; border-radius: 50%; }
+      .service-item { grid-template-columns: 1fr; gap: 10px; }
+      .service-item:hover .service-name { transform: none; }
     }
   </style>
 </head>
