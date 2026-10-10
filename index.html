@@ -14,13 +14,13 @@
       --bg-color: #fbfbfb; --text-main: #111317; --text-sub: #666666;
       --border-color: #e5e5e5; --btn-bg: #111317; --btn-text: #ffffff;
       --card-bg: #ffffff; --hover-bg: #f5f5f5; --input-bg: #ffffff;
-      --hero-accent: #f0f0f0;
+      --hero-accent: #f0f0f0; --code-flow: rgba(17, 19, 23, 0.03);
     }
     [data-theme="dark"] {
       --bg-color: #0a0a0c; --text-main: #f5f5f7; --text-sub: #86868b;
       --border-color: #262629; --btn-bg: #f5f5f7; --btn-text: #0a0a0c;
       --card-bg: #111113; --hover-bg: #1a1a1d; --input-bg: #0a0a0c;
-      --hero-accent: #111113;
+      --hero-accent: #111113; --code-flow: rgba(245, 245, 247, 0.03);
     }
 
     html { scroll-behavior: smooth; }
@@ -29,10 +29,20 @@
       background-color: var(--bg-color); color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", sans-serif;
       line-height: 1.6; transition: background-color 0.4s ease, color 0.4s ease;
-      -webkit-font-smoothing: antialiased;
+      -webkit-font-smoothing: antialiased; position: relative;
     }
     a { text-decoration: none; color: inherit; display: block; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 10; }
+
+    /* ★ 背景の流れるコードアニメーション */
+    .bg-code-flow { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; display: flex; flex-direction: column; justify-content: space-around; }
+    .code-track { display: flex; white-space: nowrap; font-family: 'Courier New', Courier, monospace; font-size: 1.5rem; font-weight: 700; color: var(--text-main); opacity: 0.03; transition: opacity 0.4s; }
+    [data-theme="dark"] .code-track { opacity: 0.04; }
+    .code-track span { padding-right: 50px; }
+    .track-left { animation: flow-left 40s linear infinite; }
+    .track-right { animation: flow-right 50s linear infinite; }
+    @keyframes flow-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    @keyframes flow-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
 
     /* オープニングローダー */
     #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: var(--text-main); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: transform 0.8s cubic-bezier(0.86, 0, 0.07, 1); }
@@ -40,19 +50,12 @@
     .loader-logo { font-size: 2.5rem; font-weight: 900; letter-spacing: 4px; color: var(--bg-color); margin-bottom: 10px; }
     .loader-progress { font-size: 1rem; font-weight: 600; color: var(--text-sub); font-variant-numeric: tabular-nums; }
 
-    /* ★ ダークモード用のPixelキャンバス */
+    /* ピクセルキャンバス */
     #pixel-transition { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; z-index: 9998; }
 
-    /* ★ サイドオーダー風：デジタルグリッチ出現アニメーション */
-    .fade-in {
-      opacity: 0;
-      /* 最初は白黒でコントラストがバグった状態 */
-      filter: grayscale(100%) contrast(200%);
-    }
-    .fade-in.visible {
-      /* steps(5) でカクカクとしたモザイク状の動きにする */
-      animation: side-order-reveal 0.6s steps(5, end) forwards;
-    }
+    /* サイドオーダー風グリッチ出現 */
+    .fade-in { opacity: 0; filter: grayscale(100%) contrast(200%); }
+    .fade-in.visible { animation: side-order-reveal 0.6s steps(5, end) forwards; }
     @keyframes side-order-reveal {
       0%   { opacity: 0; clip-path: inset(10% 0 80% 0); transform: translateX(-10px); }
       20%  { opacity: 1; clip-path: inset(60% 20% 10% 0); transform: translateX(10px); }
@@ -76,17 +79,22 @@
     .hamburger span:nth-child(1) { top: 0; } .hamburger span:nth-child(2) { top: 7px; } .hamburger span:nth-child(3) { bottom: 0; }
     .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); } .hamburger.open span:nth-child(2) { opacity: 0; } .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-    /* トップ画面 */
-    .hero { padding: 120px 0 80px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
+    /* ★ 映像背景化されたトップ画面 */
+    .hero { padding: 120px 0 80px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px; align-items: center; }
     .hero-content h1 { font-size: clamp(2.5rem, 5vw, 5rem); font-weight: 800; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 30px; }
     .hero-content p { font-size: 1.1rem; color: var(--text-sub); line-height: 1.8; margin-bottom: 40px; }
     .hero-btn { display: inline-block; padding: 14px 32px; background-color: var(--btn-bg); color: var(--btn-text); border-radius: 30px; font-weight: 600; font-size: 0.9rem; transition: transform 0.3s ease, opacity 0.3s ease; }
     .hero-btn:hover { opacity: 0.9; transform: translateY(-3px); }
-    .hero-visual { height: 100%; min-height: 400px; background-color: var(--hero-accent); border-radius: 20px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
-    .hero-visual::before { content: 'TKS.'; position: absolute; font-size: 12rem; font-weight: 900; color: var(--text-main); opacity: 0.03; letter-spacing: -5px; user-select: none; }
+    
+    .hero-visual { height: 100%; min-height: 450px; background-color: var(--hero-accent); border-radius: 20px; position: relative; overflow: hidden; border: 1px solid var(--border-color); }
+    .hero-video { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; filter: grayscale(20%); transition: filter 0.5s ease; }
+    .hero-visual:hover .hero-video { filter: grayscale(0%); }
+    .video-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.1), rgba(0,0,0,0)); pointer-events: none; }
+    /* 動画がない時のダミーテキスト（動画入れたら消えます） */
+    .video-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: var(--text-sub); font-size: 0.9rem; text-align: center; font-weight: 700; z-index: 0; }
 
     /* ライブステータス */
-    .live-stats-wrapper { border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); background-color: var(--card-bg); padding: 40px 0; }
+    .live-stats-wrapper { border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); background-color: var(--card-bg); padding: 40px 0; position: relative; z-index: 10; }
     .live-stats { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 30px; }
     .stat-item { flex: 1; text-align: center; min-width: 150px; }
     .stat-value { display: block; font-size: 2.5rem; font-weight: 800; color: var(--text-main); font-variant-numeric: tabular-nums; margin-bottom: 5px; letter-spacing: -1px; }
@@ -118,22 +126,18 @@
     .works-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 40px; }
     .work-card { display: flex; flex-direction: column; cursor: pointer; }
     .work-image-box { width: 100%; aspect-ratio: 16 / 9; background-color: var(--card-bg); border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; align-items: center; justify-content: center; overflow: hidden; transition: border-color 0.4s ease; border-radius: 8px; }
-    
-    /* ★ 実績カードの画像スタイル */
     .work-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease, filter 0.4s ease; filter: grayscale(50%); }
     .work-card:hover .work-image-box { border-color: var(--text-main); }
     .work-card:hover .work-img { transform: scale(1.05); filter: grayscale(0%); }
-    
     .work-tag { font-size: 0.75rem; font-weight: 700; color: var(--text-sub); margin-bottom: 8px; }
     .work-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; transition: color 0.3s; }
     .work-card:hover .work-title { color: var(--text-sub); }
     .work-desc { font-size: 0.9rem; color: var(--text-sub); }
 
     /* モーダル＆フォーム */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.75); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; z-index: 1000; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.1s ease; z-index: 1000; }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal-content { background-color: var(--bg-color); width: 90%; max-width: 600px; padding: 40px; border-radius: 12px; border: 1px solid var(--border-color); position: relative; transform: translateY(20px); transition: transform 0.4s ease; }
-    .modal-overlay.active .modal-content { transform: translateY(0); }
+    .modal-content { background-color: var(--bg-color); width: 90%; max-width: 600px; padding: 40px; border-radius: 12px; border: 1px solid var(--border-color); position: relative; }
     .modal-close { position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 1.5rem; color: var(--text-sub); cursor: pointer; transition: color 0.2s; }
     .modal-close:hover { color: var(--text-main); }
     .modal-tech { background-color: var(--hover-bg); padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 0.85rem; color: var(--text-main); border: 1px solid var(--border-color); }
@@ -153,7 +157,7 @@
     #thanks-message { display: none; text-align: center; padding: 40px; background-color: var(--hover-bg); border-radius: 8px; border: 1px solid var(--border-color); }
     .thanks-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 10px; }
     .thanks-desc { color: var(--text-sub); font-size: 0.95rem; }
-    footer { padding: 40px 0; text-align: center; font-size: 0.8rem; color: var(--text-sub); }
+    footer { padding: 40px 0; text-align: center; font-size: 0.8rem; color: var(--text-sub); position: relative; z-index: 10; }
 
     @media (max-width: 992px) {
       .hero { grid-template-columns: 1fr; text-align: center; padding: 80px 0; }
@@ -161,20 +165,26 @@
       .hero-visual { display: none; }
       .skills-grid { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
     }
-    @media (max-width: 768px) {
-      .hamburger { display: block; }
-      .global-nav { position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; background-color: var(--bg-color); flex-direction: column; justify-content: center; align-items: center; transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100; gap: 40px; font-size: 1.5rem; }
-      .global-nav.open { right: 0; }
-      .theme-switch span { display: none; }
-      .theme-switch { padding: 8px; border-radius: 50%; }
-      .service-item { grid-template-columns: 1fr; gap: 10px; }
-      .service-item:hover .service-name { transform: none; }
-    }
   </style>
 </head>
 <body>
 
-  <!-- ピクセルトランジション用キャンバス -->
+  <!-- ★ 追加：背景で流れるプログラミングコード -->
+  <div class="bg-code-flow">
+    <div class="code-track track-left">
+      <span>const TKS = new Developer({ skills: ['HTML', 'CSS', 'Vanilla JS', 'Python'] }); TKS.initialize();</span>
+      <span>const TKS = new Developer({ skills: ['HTML', 'CSS', 'Vanilla JS', 'Python'] }); TKS.initialize();</span>
+    </div>
+    <div class="code-track track-right">
+      <span>def execute_mission(target): data = scrape(target); return data.optimize().deploy()</span>
+      <span>def execute_mission(target): data = scrape(target); return data.optimize().deploy()</span>
+    </div>
+    <div class="code-track track-left">
+      <span>import { WebGL, Canvas, Animation } from 'next-gen-graphics'; render(document.body);</span>
+      <span>import { WebGL, Canvas, Animation } from 'next-gen-graphics'; render(document.body);</span>
+    </div>
+  </div>
+
   <canvas id="pixel-transition"></canvas>
 
   <div id="preloader">
@@ -193,14 +203,10 @@
       </nav>
       <div class="header-controls">
         <button class="theme-switch" id="theme-toggle" aria-label="Toggle Theme">
-          <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-          </svg>
+          <svg id="theme-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
           <span id="theme-text">Dark Mode</span>
         </button>
-        <button class="hamburger" id="hamburger" aria-label="Menu">
-          <span></span><span></span><span></span>
-        </button>
+        <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
       </div>
     </header>
 
@@ -210,25 +216,22 @@
         <p>デザインの透明性と、プログラムによる堅牢な動作を両立。Webサイト制作から、ブラウザで動く独自のWebアプリ、自動化スクリプトの開発まで、本質的な課題解決をワンストップで提供します。</p>
         <a href="#contact" class="hero-btn">プロジェクトを相談する</a>
       </div>
-      <div class="hero-visual"></div>
+      <!-- ★ 追加：マクラーレンやコード映像を入れる枠 -->
+      <div class="hero-visual">
+        <div class="video-placeholder">Video Area<br>(Replace src with your .mp4)</div>
+        <!-- 自分で動画を撮ったりダウンロードしたら、src="movie.mp4" みたいに書き換えてね！ -->
+        <video src="" autoplay loop muted playsinline class="hero-video"></video>
+        <div class="video-overlay"></div>
+      </div>
     </section>
   </div>
 
   <div class="live-stats-wrapper fade-in" id="stats-section">
     <div class="container">
       <div class="live-stats">
-        <div class="stat-item">
-          <span class="stat-value" id="stat-visitors">0</span>
-          <span class="stat-label">Active Visitors</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value" id="stat-loc">0</span>
-          <span class="stat-label">Lines of Code</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value" id="stat-uptime">0</span>
-          <span class="stat-label">System Uptime</span>
-        </div>
+        <div class="stat-item"><span class="stat-value" id="stat-visitors">0</span><span class="stat-label">Active Visitors</span></div>
+        <div class="stat-item"><span class="stat-value" id="stat-loc">0</span><span class="stat-label">Lines of Code</span></div>
+        <div class="stat-item"><span class="stat-value" id="stat-uptime">0</span><span class="stat-label">System Uptime</span></div>
       </div>
     </div>
   </div>
@@ -237,62 +240,36 @@
     <section id="expertise" class="fade-in">
       <div class="section-header"><h2 class="section-title">00 / Expertise</h2></div>
       <div class="skills-grid">
-        <div class="skill-card">
-          <svg class="skill-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
-          <h3 class="skill-title">Front-End Dev</h3><p class="skill-desc">HTML, CSS, Vanilla JavaScriptを用いた、ミリ秒単位のアニメーション制御とパフォーマンス最適化。</p>
-        </div>
-        <div class="skill-card">
-          <svg class="skill-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-          <h3 class="skill-title">Business Logic</h3><p class="skill-desc">Pythonによるスクレイピングや、Google Apps Scriptを用いた社内業務の自動化ツール開発。</p>
-        </div>
-        <div class="skill-card">
-          <svg class="skill-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
-          <h3 class="skill-title">UI / UX Design</h3><p class="skill-desc">ユーザーの視線誘導を計算したミニマルなデザインと、効果音を用いた触覚的なインターフェース設計。</p>
-        </div>
+        <div class="skill-card"><svg class="skill-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg><h3 class="skill-title">Front-End Dev</h3><p class="skill-desc">HTML, CSS, Vanilla JavaScriptを用いた、ミリ秒単位のアニメーション制御とパフォーマンス最適化。</p></div>
+        <div class="skill-card"><svg class="skill-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg><h3 class="skill-title">Business Logic</h3><p class="skill-desc">Pythonによるスクレイピングや、Google Apps Scriptを用いた社内業務の自動化ツール開発。</p></div>
+        <div class="skill-card"><svg class="skill-icon" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg><h3 class="skill-title">UI / UX Design</h3><p class="skill-desc">ユーザーの視線誘導を計算したミニマルなデザインと、効果音を用いた触覚的なインターフェース設計。</p></div>
       </div>
     </section>
 
     <section id="services" class="fade-in">
       <div class="section-header"><h2 class="section-title">01 / Services</h2></div>
       <div class="service-list">
-        <div class="service-item">
-          <div class="service-name">Webサイト制作</div><div class="service-desc">コーポレートサイトからLPまで、ピクセルパーフェクトな実装と滑らかなアニメーションを備えた、ブランド価値を高めるサイトを構築します。</div>
-        </div>
-        <div class="service-item">
-          <div class="service-name">Webアプリ・UI開発</div><div class="service-desc">JavaScriptを活用したブラウザゲームや、診断ツール、シミュレーション機能など、ユーザーの滞在時間を最大化するインタラクティブな体験を実装します。</div>
-        </div>
-        <div class="service-item">
-          <div class="service-name">業務自動化ツール</div><div class="service-desc">Pythonを用いたデータ収集（スクレイピング）や、定型作業の自動化スクリプトを開発。人間が本来やるべきクリエイティブな時間を創出します。</div>
-        </div>
+        <div class="service-item"><div class="service-name">Webサイト制作</div><div class="service-desc">コーポレートサイトからLPまで、ピクセルパーフェクトな実装と滑らかなアニメーションを備えた、ブランド価値を高めるサイトを構築します。</div></div>
+        <div class="service-item"><div class="service-name">Webアプリ・UI開発</div><div class="service-desc">JavaScriptを活用したブラウザゲームや、診断ツール、シミュレーション機能など、ユーザーの滞在時間を最大化するインタラクティブな体験を実装します。</div></div>
+        <div class="service-item"><div class="service-name">業務自動化ツール</div><div class="service-desc">Pythonを用いたデータ収集（スクレイピング）や、定型作業の自動化スクリプトを開発。人間が本来やるべきクリエイティブな時間を創出します。</div></div>
       </div>
     </section>
 
     <section id="works" class="fade-in">
       <div class="section-header"><h2 class="section-title">02 / Selected Works</h2></div>
       <div class="works-grid">
-        
-        <!-- ★ 画像をダミーの風景画像に差し替え（後で img/tank.jpg などに変更してね） -->
         <div class="work-card open-modal-btn" data-title="サイバータンクアリーナ" data-tag="WEB APPLICATION" data-desc="全20ステージ、機体強化、レーザー武装を実装したブラウザ上で動作する2Dアクションゲーム。当たり判定から状態管理まで全てVanilla JSで実装。" data-tech="HTML, CSS, JavaScript (ES6+), Canvas API" data-link="mygame.html">
-          <div class="work-image-box">
-            <img src="https://picsum.photos/600/400?random=1" alt="サイバータンクアリーナ" class="work-img">
-          </div>
+          <div class="work-image-box"><img src="https://picsum.photos/600/400?random=1" alt="サイバータンクアリーナ" class="work-img"></div>
           <div class="work-tag">WEB APPLICATION</div><div class="work-title">サイバータンクアリーナ</div><div class="work-desc">全20ステージ、機体強化、レーザー武装を実装したブラウザ上で動作する2Dアクションゲーム。</div>
         </div>
-
         <div class="work-card open-modal-btn" data-title="体験型シミュレーションラボ" data-tag="DIAGNOSTIC TOOL" data-desc="瞬間計算力や条件付き反射速度を測定し、正規分布グラフで可視化する診断アプリケーション群。ユーザーの滞在時間を伸ばすインタラクティブなUIを追求。" data-tech="HTML, CSS, JavaScript, Web Audio API" data-link="lab.html">
-          <div class="work-image-box">
-            <img src="https://picsum.photos/600/400?random=2" alt="シミュレーションラボ" class="work-img">
-          </div>
+          <div class="work-image-box"><img src="https://picsum.photos/600/400?random=2" alt="シミュレーションラボ" class="work-img"></div>
           <div class="work-tag">DIAGNOSTIC TOOL</div><div class="work-title">体験型シミュレーションラボ</div><div class="work-desc">瞬間計算力や条件付き反射速度を測定し、正規分布グラフで可視化する診断アプリケーション群。</div>
         </div>
-
         <div class="work-card open-modal-btn" data-title="分析ダッシュボードUI" data-tag="DATA VISUALIZATION" data-desc="自動収集したデータをリアルタイムにグラフ化し、直感的な意思決定を支援する管理画面モックアップ。業務効率化ツールのフロントエンド実装例。" data-tech="HTML, CSS, JavaScript, Chart.js" data-link="dashboard.html">
-          <div class="work-image-box">
-            <img src="https://picsum.photos/600/400?random=3" alt="ダッシュボード" class="work-img">
-          </div>
+          <div class="work-image-box"><img src="https://picsum.photos/600/400?random=3" alt="ダッシュボード" class="work-img"></div>
           <div class="work-tag">DATA VISUALIZATION</div><div class="work-title">分析ダッシュボードUI</div><div class="work-desc">自動収集したデータをリアルタイムにグラフ化し、直感的な意思決定を支援する管理画面モックアップ。</div>
         </div>
-
       </div>
     </section>
 
@@ -309,8 +286,6 @@
         </form>
       </div>
     </section>
-
-    <footer class="fade-in"><p>&copy; 2026 TKS. All rights reserved.</p></footer>
   </div>
 
   <div class="modal-overlay" id="project-modal">
@@ -324,151 +299,83 @@
   </div>
 
   <script>
-    /* ★ ダークモードのピクセルトランジション（セルオートマトン調） */
+    /* ★ ピクセルトランジション（パワーアップ版） */
     const canvas = document.getElementById('pixel-transition');
     const ctx = canvas.getContext('2d');
     let isAnimating = false;
 
-    function doPixelTransition(callback) {
+    // isThemeToggleがtrueならテーマ色、falseならメイン文字色（黒or白）で塗りつぶす
+    function doPixelTransition(callback, isThemeToggle = false) {
       if (isAnimating) return;
       isAnimating = true;
-      
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      
-      const size = window.innerWidth < 768 ? 30 : 50; // スマホとPCでブロックサイズ変更
-      const cols = Math.ceil(canvas.width / size);
-      const rows = Math.ceil(canvas.height / size);
+      canvas.width = window.innerWidth; canvas.height = window.innerHeight;
+      const size = window.innerWidth < 768 ? 30 : 50;
+      const cols = Math.ceil(canvas.width / size); const rows = Math.ceil(canvas.height / size);
       const total = cols * rows;
-      
-      // ブロックの順番をランダムシャッフル
       const blocks = Array.from({length: total}, (_, i) => i).sort(() => Math.random() - 0.5);
-      let current = 0;
-      const speed = Math.max(1, Math.floor(total / 15)); // 描画速度
+      let current = 0; const speed = Math.max(1, Math.floor(total / 15));
 
-      const nextTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-      // 埋め尽くす色は、切り替え先の背景色
-      const fillColor = nextTheme === 'dark' ? '#0a0a0c' : '#fbfbfb';
+      let fillColor;
+      if (isThemeToggle) {
+        const nextTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+        fillColor = nextTheme === 'dark' ? '#0a0a0c' : '#fbfbfb';
+      } else {
+        // カード開閉時は「一番目立つ文字色（黒か白）」を使ってバグったように画面を覆う
+        fillColor = getComputedStyle(document.documentElement).getPropertyValue('--text-main').trim();
+      }
 
       function fillBlocks() {
         ctx.fillStyle = fillColor;
         for (let i = 0; i < speed; i++) {
           if (current >= total) break;
-          const b = blocks[current];
-          const x = (b % cols) * size;
-          const y = Math.floor(b / cols) * size;
-          ctx.fillRect(x, y, size, size);
-          current++;
+          const b = blocks[current]; ctx.fillRect((b % cols) * size, Math.floor(b / cols) * size, size, size); current++;
         }
-        if (current < total) {
-          requestAnimationFrame(fillBlocks);
-        } else {
-          // 画面が完全に埋め尽くされたら裏でテーマを切り替える
-          callback();
-          setTimeout(clearBlocks, 150); // 少しタメてから消し始める
-        }
+        if (current < total) requestAnimationFrame(fillBlocks);
+        else { callback(); setTimeout(clearBlocks, 150); }
       }
 
       function clearBlocks() {
-        blocks.sort(() => Math.random() - 0.5); // 消す順番も再度ランダム
-        current = 0;
+        blocks.sort(() => Math.random() - 0.5); current = 0;
         function clearFrame() {
           for (let i = 0; i < speed; i++) {
             if (current >= total) break;
-            const b = blocks[current];
-            const x = (b % cols) * size;
-            const y = Math.floor(b / cols) * size;
-            ctx.clearRect(x, y, size, size);
-            current++;
+            const b = blocks[current]; ctx.clearRect((b % cols) * size, Math.floor(b / cols) * size, size, size); current++;
           }
-          if (current < total) {
-            requestAnimationFrame(clearFrame);
-          } else {
-            isAnimating = false;
-          }
+          if (current < total) requestAnimationFrame(clearFrame); else isAnimating = false;
         }
         clearFrame();
       }
       fillBlocks();
     }
 
-    /* ローダーとライブステータス */
-    window.addEventListener('DOMContentLoaded', () => {
-      document.body.style.overflow = 'hidden'; 
-      let progress = 0;
-      const progressEl = document.getElementById('progress-text');
-      const preloader = document.getElementById('preloader');
-      const interval = setInterval(() => {
-        progress += Math.floor(Math.random() * 15) + 5;
-        if (progress >= 100) {
-          progress = 100; progressEl.textContent = progress + '%';
-          clearInterval(interval);
-          setTimeout(() => { preloader.classList.add('loaded'); document.body.style.overflow = ''; }, 400);
-        } else {
-          progressEl.textContent = progress + '%';
-        }
-      }, 30);
-    });
-
-    const animateValue = (obj, start, end, duration, isDecimal = false) => {
-      let startTimestamp = null;
-      const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        const current = progress * (end - start) + start;
-        obj.innerHTML = isDecimal ? current.toFixed(2) + '%' : Math.floor(current).toLocaleString();
-        if (progress < 1) window.requestAnimationFrame(step);
-      };
-      window.requestAnimationFrame(step);
-    };
-
-    const statObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateValue(document.getElementById('stat-loc'), 0, 142045, 2000);
-          animateValue(document.getElementById('stat-uptime'), 0, 99.99, 2000, true);
-          statObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
-    const statsSection = document.getElementById('stats-section');
-    if(statsSection) statObserver.observe(statsSection);
-
-    const statVisitors = document.getElementById('stat-visitors');
-    let currentVisitors = 3;
-    setInterval(() => {
-      const change = Math.random() > 0.5 ? 1 : -1;
-      currentVisitors += change;
-      if (currentVisitors < 1) currentVisitors = 1; if (currentVisitors > 9) currentVisitors = 9;
-      statVisitors.innerText = currentVisitors;
-    }, 3500);
-
-    /* モーダル */
+    /* モーダル表示（★ ピクセルエフェクトと完全連携！） */
     const modalOverlay = document.getElementById('project-modal');
     const modalCloseBtn = document.getElementById('modal-close');
     const modalCards = document.querySelectorAll('.open-modal-btn');
+    
     modalCards.forEach(card => {
       card.addEventListener('click', () => {
-        document.getElementById('modal-title').textContent = card.getAttribute('data-title');
-        document.getElementById('modal-tag').textContent = card.getAttribute('data-tag');
-        document.getElementById('modal-desc').textContent = card.getAttribute('data-desc');
-        document.getElementById('modal-tech').textContent = card.getAttribute('data-tech');
-        document.getElementById('modal-link').href = card.getAttribute('data-link');
-        modalOverlay.classList.add('active'); document.body.style.overflow = 'hidden';
+        // カードをクリックしたらピクセルで埋め尽くし、画面が隠れた瞬間にモーダルをONにする
+        doPixelTransition(() => {
+          document.getElementById('modal-title').textContent = card.getAttribute('data-title');
+          document.getElementById('modal-tag').textContent = card.getAttribute('data-tag');
+          document.getElementById('modal-desc').textContent = card.getAttribute('data-desc');
+          document.getElementById('modal-tech').textContent = card.getAttribute('data-tech');
+          document.getElementById('modal-link').href = card.getAttribute('data-link');
+          modalOverlay.classList.add('active'); document.body.style.overflow = 'hidden';
+        }, false);
       });
     });
-    const closeModal = () => { modalOverlay.classList.remove('active'); document.body.style.overflow = 'auto'; };
+
+    const closeModal = () => {
+      // 閉じる時もピクセルエフェクト発動
+      doPixelTransition(() => {
+        modalOverlay.classList.remove('active'); document.body.style.overflow = 'auto';
+      }, false);
+    };
     modalCloseBtn.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeModal(); });
 
-    /* メニュー開閉 */
-    const hamburger = document.getElementById('hamburger');
-    const globalNav = document.getElementById('global-nav');
-    const navLinks = document.querySelectorAll('.global-nav a');
-    hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); globalNav.classList.toggle('open'); });
-    navLinks.forEach(link => { link.addEventListener('click', () => { hamburger.classList.remove('open'); globalNav.classList.remove('open'); }); });
-
-    /* ★ テーマ切り替え（Pixelトランジションと連動） */
+    /* テーマ切り替え */
     const toggleBtn = document.getElementById('theme-toggle');
     const themeIcon = document.getElementById('theme-icon');
     const themeText = document.getElementById('theme-text');
@@ -480,14 +387,13 @@
     updateToggleUI(savedTheme);
 
     toggleBtn.addEventListener('click', () => {
-      // アニメーションを呼び出して、画面が埋まった瞬間にテーマを切り替える
       doPixelTransition(() => {
         const currentTheme = document.documentElement.getAttribute('data-theme');
         const newTheme = currentTheme === 'light' ? 'dark' : 'light';
         document.documentElement.setAttribute('data-theme', newTheme);
         localStorage.setItem('tks-theme', newTheme);
         updateToggleUI(newTheme);
-      });
+      }, true); // テーマ切り替え時はtrue
     });
 
     function updateToggleUI(theme) {
@@ -495,35 +401,61 @@
       else { themeIcon.innerHTML = `<path d="${moonPath}"></path>`; if(themeText) themeText.textContent = 'Dark Mode'; }
     }
 
-    /* 効果音 */
-    let audioCtx = null;
-    const initAudio = () => { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); };
-    document.addEventListener('pointerdown', initAudio, { once: true });
-    document.addEventListener('pointermove', initAudio, { once: true });
-    function playSound(type) {
-      if (!audioCtx || audioCtx.state === 'suspended') return;
-      if (!window.matchMedia("(pointer: fine)").matches) return;
-      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
-      osc.connect(gain); gain.connect(audioCtx.destination); const now = audioCtx.currentTime;
-      if (type === 'hover') {
-        osc.type = 'sine'; osc.frequency.setValueAtTime(1000, now); osc.frequency.exponentialRampToValueAtTime(600, now + 0.03);
-        gain.gain.setValueAtTime(0.015, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
-        osc.start(now); osc.stop(now + 0.03);
-      } else if (type === 'click') {
-        osc.type = 'triangle'; osc.frequency.setValueAtTime(500, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
-        gain.gain.setValueAtTime(0.04, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1);
-        osc.start(now); osc.stop(now + 0.1);
-      }
-    }
-    document.querySelectorAll('a, button, .service-item, .work-card, .skill-card').forEach(el => {
-      el.addEventListener('mouseenter', () => playSound('hover'));
-      el.addEventListener('mousedown', () => playSound('click'));
+    /* ローダーとライブステータス */
+    window.addEventListener('DOMContentLoaded', () => {
+      document.body.style.overflow = 'hidden'; 
+      let progress = 0; const progressEl = document.getElementById('progress-text'); const preloader = document.getElementById('preloader');
+      const interval = setInterval(() => {
+        progress += Math.floor(Math.random() * 15) + 5;
+        if (progress >= 100) { progress = 100; progressEl.textContent = progress + '%'; clearInterval(interval); setTimeout(() => { preloader.classList.add('loaded'); document.body.style.overflow = ''; }, 400); } 
+        else { progressEl.textContent = progress + '%'; }
+      }, 30);
     });
 
+    const animateValue = (obj, start, end, duration, isDecimal = false) => {
+      let startTimestamp = null;
+      const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        const current = progress * (end - start) + start;
+        obj.innerHTML = isDecimal ? current.toFixed(2) + '%' : Math.floor(current).toLocaleString();
+        if (progress < 1) window.requestAnimationFrame(step);
+      }; window.requestAnimationFrame(step);
+    };
+
+    const statObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateValue(document.getElementById('stat-loc'), 0, 142045, 2000);
+          animateValue(document.getElementById('stat-uptime'), 0, 99.99, 2000, true);
+          statObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    const statsSection = document.getElementById('stats-section'); if(statsSection) statObserver.observe(statsSection);
+
+    const statVisitors = document.getElementById('stat-visitors'); let currentVisitors = 3;
+    setInterval(() => { const change = Math.random() > 0.5 ? 1 : -1; currentVisitors += change; if (currentVisitors < 1) currentVisitors = 1; if (currentVisitors > 9) currentVisitors = 9; statVisitors.innerText = currentVisitors; }, 3500);
+
+    /* メニュー開閉と効果音 */
+    const hamburger = document.getElementById('hamburger'); const globalNav = document.getElementById('global-nav'); const navLinks = document.querySelectorAll('.global-nav a');
+    hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); globalNav.classList.toggle('open'); });
+    navLinks.forEach(link => { link.addEventListener('click', () => { hamburger.classList.remove('open'); globalNav.classList.remove('open'); }); });
+
+    let audioCtx = null;
+    const initAudio = () => { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); };
+    document.addEventListener('pointerdown', initAudio, { once: true }); document.addEventListener('pointermove', initAudio, { once: true });
+    function playSound(type) {
+      if (!audioCtx || audioCtx.state === 'suspended' || !window.matchMedia("(pointer: fine)").matches) return;
+      const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+      osc.connect(gain); gain.connect(audioCtx.destination); const now = audioCtx.currentTime;
+      if (type === 'hover') { osc.type = 'sine'; osc.frequency.setValueAtTime(1000, now); osc.frequency.exponentialRampToValueAtTime(600, now + 0.03); gain.gain.setValueAtTime(0.015, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03); osc.start(now); osc.stop(now + 0.03); } 
+      else if (type === 'click') { osc.type = 'triangle'; osc.frequency.setValueAtTime(500, now); osc.frequency.exponentialRampToValueAtTime(100, now + 0.1); gain.gain.setValueAtTime(0.04, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.1); osc.start(now); osc.stop(now + 0.1); }
+    }
+    document.querySelectorAll('a, button, .service-item, .work-card, .skill-card').forEach(el => { el.addEventListener('mouseenter', () => playSound('hover')); el.addEventListener('mousedown', () => playSound('click')); });
+
     const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
-    const observer = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
-    }, observerOptions);
+    const observer = new IntersectionObserver((entries, observer) => { entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } }); }, observerOptions);
     document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 
     let submitted = false;
