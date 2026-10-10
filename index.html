@@ -582,28 +582,39 @@
     let submitted = false;
     function showThanks() { document.getElementById('contact-form').style.display = 'none'; document.getElementById('thanks-message').style.display = 'block'; }
   </script>
-  <script>
-  // Zennのデータを読み込んでリスト化
+ <script>
+  // Zennのデータをカード化
   fetch('./zenn_trend.json')
     .then(response => response.json())
     .then(data => {
-      const list = document.getElementById('zenn-list');
+      const container = document.getElementById('zenn-list');
       data.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `<a href="${item.link}" target="_blank" rel="noopener noreferrer">${item.title}</a>`;
-        list.appendChild(li);
+        // liの代わりにaタグのカードを作る
+        const card = document.createElement('a');
+        card.className = 'news-card';
+        card.href = item.link;
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+        
+        card.innerHTML = `<div class="news-title">${item.title}</div>`;
+        container.appendChild(card);
       });
     });
 
-  // Hacker Newsのデータを読み込んでリスト化
+  // Hacker Newsのデータをカード化
   fetch('./hn_top.json')
     .then(response => response.json())
     .then(data => {
-      const list = document.getElementById('hn-list');
+      const container = document.getElementById('hn-list');
       data.forEach(item => {
-        const li = document.createElement('li');
-        li.innerHTML = `<a href="${item.url}" target="_blank" rel="noopener noreferrer">${item.title} <small>(スコア: ${item.score})</small></a>`;
-        list.appendChild(li);
+        const card = document.createElement('a');
+        card.className = 'news-card';
+        card.href = item.url;
+        card.target = '_blank';
+        card.rel = 'noopener noreferrer';
+        
+        card.innerHTML = `<div class="news-title">${item.title}</div><div class="news-meta">スコア: ${item.score}</div>`;
+        container.appendChild(card);
       });
     });
 </script>
