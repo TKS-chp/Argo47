@@ -9,21 +9,22 @@
   <meta name="google-site-verification" content="bM9akHj-lS8HRTlVCFUzY7iqJf1Bjtkt7MliwHZps-Q" />
 
   <style>
+    /* ★ 修正1：テーマ変数にコードの色（シンタックスハイライト）を追加 */
     :root {
       --bg-color: #fbfbfb; --text-main: #111317; --text-sub: #666666;
       --border-color: #e5e5e5; --btn-bg: #111317; --btn-text: #ffffff;
       --card-bg: #ffffff; --hover-bg: #f5f5f5; --input-bg: #ffffff;
-      --hero-accent: #f0f0f0; 
-      /* ★ 背景のコードの色を濃くした */
-      --code-flow: rgba(17, 19, 23, 0.08); 
+      --hero-accent: #f0f0f0;
+      /* シンタックスハイライト（ライトモード用） */
+      --syn-kw: #a626a4; --syn-func: #4078f2; --syn-str: #50a14f; --syn-class: #c18401; --code-op: 0.15;
     }
     [data-theme="dark"] {
       --bg-color: #0a0a0c; --text-main: #f5f5f7; --text-sub: #86868b;
       --border-color: #262629; --btn-bg: #f5f5f7; --btn-text: #0a0a0c;
       --card-bg: #111113; --hover-bg: #1a1a1d; --input-bg: #0a0a0c;
-      --hero-accent: #111113; 
-      /* ★ ダークモードでも濃くした */
-      --code-flow: rgba(245, 245, 247, 0.12);
+      --hero-accent: #111113;
+      /* シンタックスハイライト（ダークモード用：VS Code風） */
+      --syn-kw: #c678dd; --syn-func: #61afef; --syn-str: #98c379; --syn-class: #e5c07b; --code-op: 0.2;
     }
 
     html { scroll-behavior: smooth; }
@@ -35,12 +36,26 @@
       -webkit-font-smoothing: antialiased; position: relative;
     }
     a { text-decoration: none; color: inherit; display: block; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; position: relative; z-index: 10; }
+    
+    /* ★ 修正2：コンテナの背景を塗りつぶして、実績やスキルの裏にコードが透けるのを防ぐ */
+    .container { 
+      max-width: 1200px; margin: 0 auto; padding: 0 5%; 
+      position: relative; z-index: 10; 
+      background-color: var(--bg-color); 
+      box-shadow: 0 0 30px var(--bg-color); /* 境界をフワッと馴染ませる */
+    }
 
-    /* 背景コード */
+    /* ★ 修正3：コードのアニメーションと色付け用のクラス */
     .bg-code-flow { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 1; pointer-events: none; overflow: hidden; display: flex; flex-direction: column; justify-content: space-around; }
-    .code-track { display: flex; white-space: nowrap; font-family: 'Courier New', Courier, monospace; font-size: 1.5rem; font-weight: 700; color: var(--code-flow); transition: color 0.4s; }
+    .code-track { display: flex; white-space: nowrap; font-family: 'Courier New', Courier, monospace; font-size: 1.5rem; font-weight: 700; color: var(--text-sub); opacity: var(--code-op); transition: opacity 0.4s; }
     .code-track span { padding-right: 50px; }
+    
+    /* 色付けの指定 */
+    .code-track .kw { color: var(--syn-kw); }
+    .code-track .func { color: var(--syn-func); }
+    .code-track .str { color: var(--syn-str); }
+    .code-track .class { color: var(--syn-class); }
+    
     .track-left { animation: flow-left 40s linear infinite; }
     .track-right { animation: flow-right 50s linear infinite; }
     @keyframes flow-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
